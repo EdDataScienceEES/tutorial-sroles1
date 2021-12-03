@@ -1,6 +1,7 @@
 #intro ---- 
 rm(list=ls())
 
+data(`C:/Users/s1869354/OneDrive - University of Edinburgh/Year 3/Data Science/2015_State_Top10Report_wTotalThefts`)
 library(tidyverse)
 library(ggplot2)
 thefts <- X2015_State_Top10Report_wTotalThefts
@@ -17,7 +18,7 @@ thefts$make <- ifelse(grepl("Toy", thefts$make_and_model, ignore.case = T), "Toy
       ifelse(grepl("Pontiac ", thefts$make_and_model, ignore.case = T), "Pontiac ",
       ifelse(grepl("Hyundai ", thefts$make_and_model, ignore.case = T), "Hyundai ",
       ifelse(grepl("Subaru ", thefts$make_and_model, ignore.case = T), "Subaru ",
-      ifelse(grepl("Chrysler  ", thefts$make_and_model, ignore.case = T), "Chrysler  ",
+      ifelse(grepl("Chrysler", thefts$make_and_model, ignore.case = T), "Chrysler  ",
       ifelse(grepl("Dodge", thefts$make_and_model, ignore.case = T), "Dodge", "Other")))))))))))))
                   
 
@@ -55,30 +56,73 @@ thefts <- thefts %>%
   mutate_at("make_and_model", str_replace, "Dodge", "")
 
 
+library(plotly)
+install.packages("gapminder")
+library(gapminder)
+
+(thefts_plot<- thefts$model <- reorder(thefts$model, thefts$thefts)
+thefts$make <- reorder(thefts$make, -thefts$thefts)
+ggplot(thefts, aes(x = thefts, y = model)) + 
+  geom_point() + 
+  scale_x_continuous(trans = "log10") +
+  facet_grid(make ~ ., scales = "free", space = "free") +
+  theme(strip.text.y = element_text(angle = 0))
+)
+
+(thefts_plot<-  ggplot(thefts, aes(x = thefts, y = model)) + 
+    geom_point() + 
+    scale_x_continuous(trans = "log10") +
+    theme(strip.text.y = element_text(angle = 0))
+)
+
+ggplotly(thefts_plot)
+
+(thefts_plot1<-  ggplot(thefts, aes(thefts, model)) + 
+    geom_point() + 
+    scale_x_continuous(trans = "log10")
+
+
+ggplotly(thefts_plot1)
+  
+  +
+    facet_grid(make ~ ., scales = "free", space = "free") +
+    theme(strip.text.y = element_text(angle = 0))
+)
 
 
 
+(thefts_p<- 
+  ggplot(data = thefts, aes(x = thefts, y = model)) + 
+  geom_point() + 
+  scale_x_continuous(trans = "log10"))+
+  facet_grid(make ~ ., scales = "free", space = "free") +
+  theme(strip.text.y = element_text(angle = 0))
 
+ggplotly(thefts_p)
 
+(thefts_plot2<-ggplot(thefts, aes(x = thefts, y = model)) + 
+    geom_point(size = 1) + 
+    scale_x_continuous(trans = "log10") +
+    facet_grid(make ~ ., scales = "free", space = "free") +
+    theme(strip.text.y = element_text(angle = 0))
+)
+fig <- ggplotly(thefts_plot2)
+fig <- fig %>% layout(autosize = F, width = 500, height = 500, margin = m)
 
+#install.packages("devtools") ----
+ #devtools::install_github("haleyjeppson/ggmosaic")
+ #library(ggmosaic)
 
+(thefts_plot<-ggplot(thefts, aes(x = rank, y = model, colour = state)) + 
+   geom_point() + 
+   #   scale_x_continuous(trans = "log10") +
+   facet_grid(make ~ ., scales = "free", space = "free") +
+   theme(strip.text.y = element_text(angle = 0))
+)
 
+library(plotly)
+install.packages("gapminder")
+library(gapminder)
+ggplotly(thefts_plot)
 
-
-
-
-
-# install.packages("devtools") ----
-# devtools::install_github("haleyjeppson/ggmosaic")
-# library(ggmosaic)
-
-(theft_example <- ggplot(data = thefts) +
-  geom_mosaic(aes(x=product(, ``, ), fill = `Make/Model`, alpha = `State`)) + 
-  scale_alpha_manual(values =c(.7,.9)) +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = .5)) + 
-  labs(y="Do you recline?", x="Eliminate reclining?:Is it rude to recline?", title = "Mosaic Plot (3 variables)"))
-
-(ggplot(data = thefts) +
-  geom_mosaic(aes(x = product(state, `make_and_model`), fill=state)) + 
-  labs(title='state | make/model'))
 

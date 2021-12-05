@@ -97,23 +97,36 @@ combined$Demographic <- factor(combined$Demographic, levels=c("Under $25,000", "
                     fill = voted_for, colour = Demographic), offset = 0.05) + 
        theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = .5)) + 
     labs(y="Income Demographic", x="Voted for: State", title = "Exit Poll") +
-    scale_fill_manual(values = c("Trump" = "firebrick3", "Biden" = "deepskyblue3"))
+    scale_fill_manual(values = c("Trump" = "firebrick3", "Biden" = "deepskyblue3")) +
+    theme_bw() + theme(panel.border = element_blank(),
+                       panel.grid.minor = element_blank(),
+                       plot.title = element_text(hjust = 0.5),
+                       axis.line = element_blank())
   )
 ```
-![image](https://user-images.githubusercontent.com/91271151/144751862-1abb97ce-edd8-46fb-a1af-ecc9e49732ba.png)
+
+![image](https://user-images.githubusercontent.com/91271151/144756569-1479db89-9eab-4a71-88fa-0900aa2c5a9c.png)
+
 However, there is limitations with gg_mosaic. Mosaic plots idealy are able to show more catagorical variables than this for example by the use of transparency. However when using this in gg_mosaic it causes complications. Try showing who was the overall winner in each group using the alpha argument in the geom_mosaic aesthetic. 
 
 ```
+# Plot mosaic figure showing proportion of demographic to total population in 
+# each state, and how they voted. 
 (mosaic_plot_alpha <- ggplot(data = combined) +
     geom_mosaic(aes(x=product( Demographic, State_Abbr ),
                     fill = voted_for, colour = Demographic, alpha = Winner,), offset = 0.05) +
     scale_alpha_manual(values =c(.5,1)) +
     theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = .5)) + 
     labs(y="Income Demographic", x="Voted for: State", title = "Exit Poll") +
-    scale_fill_manual(values = c("Trump" = "firebrick3", "Biden" = "deepskyblue3"))
+    scale_fill_manual(values = c("Trump" = "firebrick3", "Biden" = "deepskyblue3"))+
+    theme_bw() + theme(panel.border = element_blank(),
+                       panel.grid.minor = element_blank(), 
+                       plot.title = element_text(hjust = 0.5),
+                       axis.line = element_blank())
 )
 ```
-![image](https://user-images.githubusercontent.com/91271151/144751787-dc9c6cc9-1479-49b3-ac19-d71e05f89423.png)
+
+![image](https://user-images.githubusercontent.com/91271151/144756533-49af96f8-e0f5-4635-8a9f-07d6ef38b6d8.png)
 
 We now have a plot which displays four catagorical variables clearly. However, a complication with gg_mosaic is that it is very hard to alter axis labels. This has made our axis a little complex and comprimised the clarity of out plot. 
 
@@ -188,8 +201,15 @@ combined_facet <- rbind(expanded_biden_facet,expanded_trump_facet)
     theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = .5)) + 
     labs(y="Income Demographic", x="Voted for: State", title = "Exit Poll") +
     scale_fill_manual(values = c("Trump" = "firebrick3", "Biden" = "deepskyblue3")) +
-    facet_wrap(~region, nrow = 1)
+    theme_bw() + theme(panel.border = element_blank(),
+                       panel.grid.minor = element_blank(),
+                       plot.title = element_text(hjust = 0.5),
+                       axis.line = element_blank(),
+                       axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+    facet_wrap(~region, nrow = 1) 
 )
 ```
 
-![image](https://user-images.githubusercontent.com/91271151/144754885-d0d3c39b-545b-4f61-867a-3620304400dc.png)
+![image](https://user-images.githubusercontent.com/91271151/144756673-13e8f96b-4bc6-4173-b25d-057805998e28.png)
+
+

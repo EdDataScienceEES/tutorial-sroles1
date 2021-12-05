@@ -130,9 +130,9 @@ However, there is limitations with gg_mosaic. Mosaic plots idealy are able to sh
 We now have a plot which displays four catagorical variables. However, a complication with gg_mosaic is that it is very hard to alter axis labels. This is due to the fact that although we know that variables are discrete, in gg_mosaic they are continuous as this is how the proportionate sizes of boxes based on count data, is in a mosaic plot are generated. This means it is not possible to customise axis, in an intuitive way. This has made our axis a little complex and comprimised the clarity of out plot, as is seen on the x-axis where there are redundant labels. In the next plot we will show one approach to tackling this problem.
 
 Now, if we wanted we could take this plot a step further and display a fifth categorical variable- region. We cannot use facet_wrap() because in this case we want our x-axis to be diferent according to which states are found in a region. If we had equivilent data for the 2016 exit poll we could facet wrap by year. However, we will instead create two seperate plots based on region and combine them using grid.arrange(). We will repeat the previous code and create then add in another varible (region) to display.
-```
 
-# Repetition of the previous section but to allow for the creation of two comparable plots according to region 
+```
+# Repetition of the previous section but to allow for facetting according to region 
 
 
 # Filter data set for only wage-bracket demographics
@@ -171,28 +171,28 @@ region_data <- rbind(north_east, deep_south)
 
 # Create two new data frames in which to expand the rows, also deletes column 
 # where data was extracted from
-expanded_biden_facet <- expandRows(region_data, "Biden_%")
-expanded_trump_facet <- expandRows(region_data, "Trump_%")
+expanded_biden_region<- expandRows(region_data, "Biden_%")
+expanded_trump_region <- expandRows(region_data, "Trump_%")
 
 # Expand rows to show the proportion of the total population each demographic 
 # makes up
-expanded_biden_facet <- expandRows(expanded_biden_facet, "proportion")
-expanded_trump_facet <- expandRows(expanded_trump_facet, "proportion")
+expanded_biden_region <- expandRows(expanded_biden_region, "proportion")
+expanded_trump_region <- expandRows(expanded_trump_region, "proportion")
 
 # Add new column name to distinguish Trump voters from Biden voters
-expanded_trump_facet$voted_for <- "Trump"
-expanded_biden_facet$voted_for <- "Biden"
+expanded_trump_region$voted_for <- "Trump"
+expanded_biden_region$voted_for <- "Biden"
 
 # Remove names of column which has been deleted from the other data set in order
 # to make them match, ready to combine
-expanded_biden_facet <- expanded_biden_facet %>% select(-"Trump_%")
-expanded_trump_facet <- expanded_trump_facet %>% select(-"Biden_%")
+expanded_biden_region <- expanded_biden_region %>% select(-"Trump_%")
+expanded_trump_region <- expanded_trump_region %>% select(-"Biden_%")
 
 # Combine the two data sets 
-combined_facet <- rbind(expanded_biden_facet,expanded_trump_facet)
+combined_region <- rbind(expanded_biden_region,expanded_trump_region)
 
-deep_south_data <- subset(combined_facet, region == "Deep South")
-north_east_data <- subset(combined_facet, region == "North East")
+deep_south_data <- subset(combined_region, region == "Deep South")
+north_east_data <- subset(combined_region, region == "North East")
 
 # North East plot 
 (mosaic_plot_ne <-north_east_data %>%

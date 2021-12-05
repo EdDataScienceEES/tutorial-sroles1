@@ -100,8 +100,7 @@ combined$Demographic <- factor(combined$Demographic, levels=c("Under $25,000", "
     scale_fill_manual(values = c("Trump" = "firebrick3", "Biden" = "deepskyblue3"))
   )
 ```
-![image](https://user-images.githubusercontent.com/91271151/144751769-84f1cc4a-4eab-43a7-aea0-0dfabd262972.png)
-
+![image](https://user-images.githubusercontent.com/91271151/144751862-1abb97ce-edd8-46fb-a1af-ecc9e49732ba.png)
 However, there is limitations with gg_mosaic. Mosaic plots idealy are able to show more catagorical variables than this for example by the use of transparency. However when using this in gg_mosaic it causes complications. Try showing who was the overall winner in each group using the alpha argument in the geom_mosaic aesthetic. 
 
 ```

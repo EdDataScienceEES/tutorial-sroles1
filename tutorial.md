@@ -127,12 +127,12 @@ However, there is limitations with gg_mosaic. Mosaic plots idealy are able to sh
 ```
 ![image](https://user-images.githubusercontent.com/91271151/144756533-49af96f8-e0f5-4635-8a9f-07d6ef38b6d8.png)
 
-We now have a plot which displays four catagorical variables clearly. However, a complication with gg_mosaic is that it is very hard to alter axis labels. This has made our axis a little complex and comprimised the clarity of out plot. 
+We now have a plot which displays four catagorical variables. However, a complication with gg_mosaic is that it is very hard to alter axis labels. This is due to the fact that although we know that variables are discrete, in gg_mosaic they are continuous as this is how the proportionate sizes of boxes based on count data, is in a mosaic plot are generated. This means it is not possible to customise axis, in an intuitive way. This has made our axis a little complex and comprimised the clarity of out plot, as is seen on the x-axis where there are redundant labels. In the next plot we will show one approach to tackling this problem.
 
-Now, if we wanted we could take this plot a step further and display a fifth categorical variable- region. We cannot use facet_wrap() because in this case we want our x-axis to be diferent. We will instead create two seperate plots and combine them using grid.arrange(). We will repeat the previous code and create then add in another varible (region) to display.
+Now, if we wanted we could take this plot a step further and display a fifth categorical variable- region. We cannot use facet_wrap() because in this case we want our x-axis to be diferent according to which states are found in a region. If we had equivilent data for the 2016 exit poll we could facet wrap by year. However, we will instead create two seperate plots based on region and combine them using grid.arrange(). We will repeat the previous code and create then add in another varible (region) to display.
 ```
 
-# Repetition of the previous section but to allow for facetting according to region 
+# Repetition of the previous section but to allow for the creation of two comparable plots according to region 
 
 
 # Filter data set for only wage-bracket demographics

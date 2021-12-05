@@ -1,91 +1,225 @@
-rm(list=ls()) # clear environment
-ulst2 <- lapply(exit_poll, unique)
-ulst2
+# clear environment
+rm(list=ls()) 
 
-# load exit poll data
+
+
+# libraries
 library(tidyverse)
 library(readxl)
-exit_poll <- read_excel("data/2020_ap_exit_polls_combined_1.xlsx")
 
-# majority votes column
-exit_poll$majority_votes<- ifelse(exit_poll$`Biden_%` >
-                                    exit_poll$`Trump_%`, "Biden", "Trump")
+# load exit poll data
+exit_poll <- read_excel("data/2020_ap_exit_polls_combined_2.xlsx")
+
+# see all the columns and their unique levels 
+ulist <- lapply(exit_poll, unique) 
+ulist
 
 
-
-#filt <- exit_poll %>% filter(Demographic == "Rural" |
- #                              Demographic == "Small Town" |
-  #                             Demographic == "Suburban" |
-   #                            Demographic == "Urban")
-
+# Filter data set for only wage-bracket demographics
 filt <- exit_poll %>% filter(Demographic == "Under $25,000"  |
                           Demographic == "$25,000 - $49,999" |
                           Demographic == "$50,000 - $74,999" |
+                          Demographic == "$75,000 - $99,999" | 
                           Demographic == "$100,000+")
 
+# Find out which states have most electoral power
+state_value <- unique(exit_poll[c( "Electoral_Votes_Available","State_Abbr")])
+state_value <- state_value[order(state_value$Electoral_Votes_Available, decreasing = TRUE), ]
+
+# Filter data for top four states
 filt <- filt %>% filter(State_Abbr == "CA" |
                              State_Abbr == "TX" |
                             State_Abbr == "FL" |
                            State_Abbr == "NY")
 
+
 #install.packages("splitstackshape")
+
+# library 
 library(splitstackshape)
 
-expanded <- expandRows(filt, "Biden_%")
-expanded2 <- expandRows(filt, "Trump_%")
+# Convert rows to count data for the percentage who voted for biden and the
+# percentage who voted for trump. 
 
-expanded <- expandRows(expanded, "proportion")
-expanded2 <- expandRows(expanded2, "proportion")
+# Create two new data frames in which to expand the rows, also deletes column 
+# where data was extracted from
+expanded_biden <- expandRows(filt, "Biden_%")
+expanded_trump <- expandRows(filt, "Trump_%")
 
-expanded2$voted_for <- "Trump"
-expanded$voted_for <- "Biden"
+# Expand rows to show the proportion of the total population each demographic 
+# makes up
+expanded_biden <- expandRows(expanded_biden, "proportion")
+expanded_trump <- expandRows(expanded_trump, "proportion")
 
-combined <- rbind(expanded,expanded2)
+# Add new column name to distinguish Trump voters from Biden voters
+expanded_trump$voted_for <- "Trump"
+expanded_biden$voted_for <- "Biden"
 
-expanded <- expanded %>% select(-"Trump_%")
-expanded2 <- expanded2 %>% select(-"Biden_%")
+# Remove names of column which has been deleted from the other data set in order
+# to make them match, ready to combine
+expanded_biden <- expanded_biden %>% select(-"Trump_%")
+expanded_trump <- expanded_trump %>% select(-"Biden_%")
+
+# Combine the two data sets 
+combined <- rbind(expanded_biden,expanded_trump)
 
 
 
 
 
 
+
+# Library 
 library(ggmosaic)
 
-#(mosaic2 <-  ggplot(data = filt) +
- # geom_mosaic(aes(x = product(Demographic), fill = State_Abbr)) + 
-  #theme_mosaic()
-  #)
+# Reorder demographics into ascending order
+combined$Demographic <- factor(combined$Demographic, levels=c("Under $25,000", "$25,000 - $49,999", "$50,000 - $74,999", "$75,000 - $99,999", "$100,000+"))
 
-
-
-(mosaic3 <- ggplot(data = combined) +
+# Plot mosaic figure showing proportion of demographic to total population in 
+# each state, and how they voted. 
+(mosaic_plot <- ggplot(data = combined) +
     geom_mosaic(aes(x=product( Demographic, State_Abbr ),
-                    fill = voted_for, alpha = State_Abbr, colour = Demographic), offset = 0.05) + 
-    scale_alpha_manual(values =c(.3,.5,.7,1)) +
-    theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = .5)) + 
-    labs(y="State", x="Income Demographic:Who they Voted For", title = "Exit Poll")
+                    fill = voted_for, colour = Demographic), offset = 0.05) + 
+       theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = .5)) + 
+    labs(y="Income Demographic", x="Voted for: State", title = "Exit Poll") +
+    scale_fill_manual(values = c("Trump" = "firebrick3", "Biden" = "deepskyblue3")) +
+    theme_bw() + theme(panel.border = element_blank(),
+                       panel.grid.minor = element_blank(),
+                       plot.title = element_text(hjust = 0.5),
+                       axis.line = element_blank())
   )
 
-combined$Demographic <- factor(combined$Demographic, levels=c("Under $25,000", "$25,000 - $49,999", "$50,000 - $74,999", "$75,000 - $99,999", "$100,000+"))
+
 #combined$voted_for <- factor(combined$voted_for, levels=c("", "","","","", "","","" ))
  
-
-
-(mosaic3 <- ggplot(data = combined) +
+# Plot mosaic figure showing proportion of demographic to total population in 
+# each state, and how they voted. 
+(mosaic_plot_alpha <- ggplot(data = combined) +
     geom_mosaic(aes(x=product( Demographic, State_Abbr ),
-                    fill = voted_for, weight = Electoral_Votes_Available
-                   # alpha = State_Abbr,
-                ), offset = 0.03) + 
-   # scale_alpha_manual(values =c(.3,.5,.7,1)) +
+                    fill = voted_for, colour = Demographic, alpha = winner_amongst_group,), offset = 0.05) +
+    scale_alpha_manual(values =c(.5,1)) +
     theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = .5)) + 
-    labs(y="State", x="Income Demographic:Who they Voted For", title = "Exit Poll") +
-    facet_wrap(~Winner, nrow = 1)
+    labs(y="Income Demographic", x="Voted for: State", title = "Exit Poll") +
+    scale_fill_manual(values = c("Trump" = "firebrick3", "Biden" = "deepskyblue3"))+
+    theme_bw() + theme(panel.border = element_blank(),
+                       panel.grid.minor = element_blank(),
+                       plot.title = element_text(hjust = 0.5),
+                       axis.line = element_blank())
 )
-  + 
-    scale_x_continuous(labels= SoilSciGuylabs)
-
-SoilSciGuylabs <- c("CA", "", "FL", "", "NY", "", "TX", "")
 
 
-facet_wrap(~species, nrow = 1)
+# Repetition of the previous section but to allow for facetting according to region
+
+
+
+# Reorder demographics into ascending order
+combined_facet$Demographic <- factor(region_data$Demographic, levels=c("Under $25,000", "$25,000 - $49,999", "$50,000 - $74,999", "$75,000 - $99,999", "$100,000+"))
+
+
+# Filter data set for only wage-bracket demographics
+region_data <- exit_poll %>% filter(Demographic == "Under $25,000"  |
+                               Demographic == "$25,000 - $49,999" |
+                               Demographic == "$50,000 - $74,999" |
+                               Demographic == "$75,000 - $99,999" | 
+                               Demographic == "$100,000+")
+
+
+# Filter deep south states
+deep_south <- region_data %>% filter(State == "south-carolina" |
+                                     State == "mississippi" |
+                                     State == "florida" |
+                                     State == "texas" |
+                                     State == "alabama" )
+
+# Filter north east states 
+north_east <- region_data %>% filter(State == "connecticut" |
+                                     State == "new-hampshire" |
+                                     State == "new-jersey" |
+                                     State == "new-york" |
+                                     State == "pennsylvania")
+
+
+# Add region column 
+north_east$region <- "North East"
+deep_south$region <- "Deep South"
+
+# Combine the two data sets 
+region_data <- rbind(north_east, deep_south)
+
+
+
+
+# Convert rows to count data for the percentage who voted for biden and the
+# percentage who voted for trump. 
+
+# Create two new data frames in which to expand the rows, also deletes column 
+# where data was extracted from
+expanded_biden_facet <- expandRows(region_data, "Biden_%")
+expanded_trump_facet <- expandRows(region_data, "Trump_%")
+
+# Expand rows to show the proportion of the total population each demographic 
+# makes up
+expanded_biden_facet <- expandRows(expanded_biden_facet, "proportion")
+expanded_trump_facet <- expandRows(expanded_trump_facet, "proportion")
+
+# Add new column name to distinguish Trump voters from Biden voters
+expanded_trump_facet$voted_for <- "Trump"
+expanded_biden_facet$voted_for <- "Biden"
+
+# Remove names of column which has been deleted from the other data set in order
+# to make them match, ready to combine
+expanded_biden_facet <- expanded_biden_facet %>% select(-"Trump_%")
+expanded_trump_facet <- expanded_trump_facet %>% select(-"Biden_%")
+
+# Combine the two data sets 
+combined_facet <- rbind(expanded_biden_facet,expanded_trump_facet)
+
+deep_south_data <- subset(combined_facet, region == "Deep South")
+north_east_data <- subset(combined_facet, region == "North East")
+
+
+(mosaic_plot_ne <- ggplot(data = north_east_data) +
+    geom_mosaic(aes(x=product( Demographic, State_Abbr ),
+                    fill = voted_for, colour = Demographic, alpha = winner_amongst_group,), offset = 0.05) +
+    scale_alpha_manual(values =c(.5,1)) +
+    theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = .5)) + 
+    labs(y="Income Demographic", x="CT        NH       NJ       NY       PA"      , title = "North East") +
+    scale_fill_manual(values = c("Trump" = "firebrick3", "Biden" = "deepskyblue3")) +
+    theme_bw() + theme(panel.border = element_blank(),
+                       panel.grid.minor = element_blank(),
+                       panel.grid.major = element_blank(),
+                       plot.title = element_text(hjust = 0.5),
+                       axis.line = element_blank(),
+                    #   axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
+                       axis.title.y=element_blank(),
+                       axis.text.y=element_blank(),
+                       axis.ticks.y=element_blank(),
+                       axis.text.x=element_blank(),
+                       axis.ticks.x=element_blank())
+)
+
+(mosaic_plot_ds <- ggplot(data = deep_south_data) +
+    geom_mosaic(aes(x=product( Demographic, State_Abbr ),
+                    fill = voted_for, colour = Demographic, alpha = winner_amongst_group,), offset = 0.05) +
+    scale_alpha_manual(values =c(.5,1)) +
+    theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = .5)) + 
+    labs(y="Income Demographic", x="AL        FL         MS         SC         TX"      , title = "Deep South") +
+    scale_fill_manual(values = c("Trump" = "firebrick3", "Biden" = "deepskyblue3")) +
+    theme_bw() + theme(panel.border = element_blank(),
+                       panel.grid.minor = element_blank(),
+                       panel.grid.major = element_blank(),
+                       plot.title = element_text(hjust = 0.5),
+                       axis.line = element_blank(),
+                       #   axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
+                       axis.text.x=element_blank(),
+                       axis.ticks.x=element_blank(),
+                       legend.position = "none")
+)
+
+
+
+library(gridExtra)
+
+grid.arrange(mosaic_plot_ds, mosaic_plot_ne, ncol=2)
+
+                             

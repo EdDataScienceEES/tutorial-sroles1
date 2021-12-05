@@ -12,4 +12,32 @@ Catagorical variables with many levels are hard to plot. This is because they fu
 *make, model, 
 
 
+When collecting data in a format such as survey it can become highly dimentional. There can be many catagorical columns with many repeating rows (count data). One way to visualise this is through the use of mosaic plots. 
+
+Import exit_poll data set 
+
+```
+# clear environment
+rm(list=ls()) 
+
+# libraries
+library(tidyverse)
+library(readxl)
+
+# load exit poll data
+exit_poll <- read_excel("data/2020_ap_exit_polls_combined_1.xlsx")
+
+# see all the columns and their unique levels 
+ulist <- lapply(exit_poll, unique) 
+ulist
+```
+This data set contains 28 demographics and 50 states Mosaic plots work well for displaying multiple catagorical variables but can't handle this many levels and remain clear. In this example we will choose our demogrpahic to focus on to be wage-brackets
+
+```
+filt <- exit_poll %>% filter(Demographic == "Under $25,000"  |
+                          Demographic == "$25,000 - $49,999" |
+                          Demographic == "$50,000 - $74,999" |
+                          Demographic == "$100,000+")
+```
+
 

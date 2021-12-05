@@ -125,19 +125,18 @@ However, there is limitations with gg_mosaic. Mosaic plots idealy are able to sh
                        axis.line = element_blank())
 )
 ```
-
 ![image](https://user-images.githubusercontent.com/91271151/144756533-49af96f8-e0f5-4635-8a9f-07d6ef38b6d8.png)
 
 We now have a plot which displays four catagorical variables clearly. However, a complication with gg_mosaic is that it is very hard to alter axis labels. This has made our axis a little complex and comprimised the clarity of out plot. 
 
-Now, if we wanted we could take this plot a step further and display a fifth categorical variable using facet_wrap(). When we combine the mosaic plot with facet technique we are able to display 5 categorical variables clearly. We will repeat the previous code and add in another varible to display- region. We will group states into regions as an example. In a more complete data set this grouping would be already done and more completely. 
-
+Now, if we wanted we could take this plot a step further and display a fifth categorical variable- region. We cannot use facet_wrap() because in this case we want our x-axis to be diferent. We will instead create two seperate plots and combine them using grid.arrange(). We will repeat the previous code and create then add in another varible (region) to display.
 ```
-# Repetition of the previous section but to allow for facetting according to region
+
+# Repetition of the previous section but to allow for facetting according to region 
 
 
 # Filter data set for only wage-bracket demographics
-facet_data <- exit_poll %>% filter(Demographic == "Under $25,000"  |
+region_data <- exit_poll %>% filter(Demographic == "Under $25,000"  |
                                Demographic == "$25,000 - $49,999" |
                                Demographic == "$50,000 - $74,999" |
                                Demographic == "$75,000 - $99,999" | 
@@ -145,14 +144,14 @@ facet_data <- exit_poll %>% filter(Demographic == "Under $25,000"  |
 
 
 # Filter deep south states
-deep_south <- facet_data %>% filter(State == "south-carolina" |
+deep_south <- region_data %>% filter(State == "south-carolina" |
                                      State == "mississippi" |
                                      State == "florida" |
                                      State == "texas" |
                                      State == "alabama" )
 
 # Filter north east states 
-north_east <- facet_data %>% filter(State == "connecticut" |
+north_east <- region_data %>% filter(State == "connecticut" |
                                      State == "new-hampshire" |
                                      State == "new-jersey" |
                                      State == "new-york" |
@@ -164,9 +163,7 @@ north_east$region <- "North East"
 deep_south$region <- "Deep South"
 
 # Combine the two data sets 
-facet_data <- rbind(north_east, deep_south)
-
-
+region_data <- rbind(north_east, deep_south)
 
 
 # Convert rows to count data for the percentage who voted for biden and the
@@ -174,8 +171,8 @@ facet_data <- rbind(north_east, deep_south)
 
 # Create two new data frames in which to expand the rows, also deletes column 
 # where data was extracted from
-expanded_biden_facet <- expandRows(facet_data, "Biden_%")
-expanded_trump_facet <- expandRows(facet_data, "Trump_%")
+expanded_biden_facet <- expandRows(region_data, "Biden_%")
+expanded_trump_facet <- expandRows(region_data, "Trump_%")
 
 # Expand rows to show the proportion of the total population each demographic 
 # makes up
@@ -194,22 +191,60 @@ expanded_trump_facet <- expanded_trump_facet %>% select(-"Biden_%")
 # Combine the two data sets 
 combined_facet <- rbind(expanded_biden_facet,expanded_trump_facet)
 
-(mosaic_plot_alpha <- ggplot(data = combined_facet) +
+deep_south_data <- subset(combined_facet, region == "Deep South")
+north_east_data <- subset(combined_facet, region == "North East")
+
+# North East plot 
+(mosaic_plot_ne <-north_east_data %>%
+    arrange(Demographic) %>%    
+    mutate(Demographic=factor(Demographic, levels=c("Under $25,000", "$25,000 - $49,999", "$50,000 - $74,999", "$75,000 - $99,999", "$100,000+"))) %>%
+    ggplot() +
     geom_mosaic(aes(x=product( Demographic, State_Abbr ),
-                    fill = voted_for, colour = Demographic, alpha = Winner,), offset = 0.05) +
+                    fill = voted_for, colour = Demographic, alpha = winner_amongst_group,), offset = 0.05) +
     scale_alpha_manual(values =c(.5,1)) +
     theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = .5)) + 
-    labs(y="Income Demographic", x="Voted for: State", title = "Exit Poll") +
+    labs(x="CT        NH       NJ       NY       PA"      , title = "North East") +
     scale_fill_manual(values = c("Trump" = "firebrick3", "Biden" = "deepskyblue3")) +
     theme_bw() + theme(panel.border = element_blank(),
                        panel.grid.minor = element_blank(),
+                       panel.grid.major = element_blank(),
                        plot.title = element_text(hjust = 0.5),
                        axis.line = element_blank(),
-                       axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
-    facet_wrap(~region, nrow = 1) 
+                    #   axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
+                       axis.title.y=element_blank(),
+                       axis.text.y=element_blank(),
+                       axis.ticks.y=element_blank(),
+                       axis.text.x=element_blank(),
+                       axis.ticks.x=element_blank())
 )
+
+# Deep South plot
+(mosaic_plot_ds <- deep_south_data %>%
+    arrange(Demographic) %>%    
+    mutate(Demographic=factor(Demographic, levels=c("Under $25,000", "$25,000 - $49,999", "$50,000 - $74,999", "$75,000 - $99,999", "$100,000+"))) %>% 
+    ggplot() +
+    geom_mosaic(aes(x=product( Demographic, State_Abbr ),
+                    fill = voted_for, colour = Demographic, alpha = winner_amongst_group,), offset = 0.05) +
+    scale_alpha_manual(values =c(.5,1)) +
+    theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = .5)) + 
+    labs(y="Votes for:Income Demographic", x="AL        FL         MS         SC         TX"      , title = "Deep South") +
+    scale_fill_manual(values = c("Trump" = "firebrick3", "Biden" = "deepskyblue3")) +
+    theme_bw() + theme(panel.border = element_blank(),
+                       panel.grid.minor = element_blank(),
+                       panel.grid.major = element_blank(),
+                       plot.title = element_text(hjust = 0.5),
+                       axis.line = element_blank(),
+                       #   axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
+                       axis.text.x=element_blank(),
+                       axis.ticks.x=element_blank(),
+                       legend.position = "none")
+)
+
+# Arrange both plots together to give the appearance of a facet 
+grid.arrange(mosaic_plot_ds, mosaic_plot_ne, ncol=2, bottom = "States")
 ```
 
-![image](https://user-images.githubusercontent.com/91271151/144756673-13e8f96b-4bc6-4173-b25d-057805998e28.png)
+![image](https://user-images.githubusercontent.com/91271151/144762600-ecdd201d-9008-4475-a16a-a1fb462d7dca.png)
+
 
 

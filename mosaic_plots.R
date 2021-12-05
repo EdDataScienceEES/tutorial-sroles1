@@ -112,9 +112,6 @@ combined$Demographic <- factor(combined$Demographic, levels=c("Under $25,000", "
 
 
 
-# Reorder demographics into ascending order
-combined_facet$Demographic <- factor(region_data$Demographic, levels=c("Under $25,000", "$25,000 - $49,999", "$50,000 - $74,999", "$75,000 - $99,999", "$100,000+"))
-
 
 # Filter data set for only wage-bracket demographics
 region_data <- exit_poll %>% filter(Demographic == "Under $25,000"  |
@@ -172,13 +169,19 @@ expanded_biden_facet <- expanded_biden_facet %>% select(-"Trump_%")
 expanded_trump_facet <- expanded_trump_facet %>% select(-"Biden_%")
 
 # Combine the two data sets 
-combined_facet <- rbind(expanded_biden_facet,expanded_trump_facet)
+combined_facet <- rbind(expanded_bi# Reorder demographics into ascending order
+den_facet,expanded_trump_facet)
 
 deep_south_data <- subset(combined_facet, region == "Deep South")
 north_east_data <- subset(combined_facet, region == "North East")
 
+deep_south_data <- deep_south_data[order(deep_south_data$Demographic, decreasing = TRUE), ]
+north_east_data <- north_east_data[order(north_east_data$Demographic, decreasing = FALSE), ]
 
-(mosaic_plot_ne <- ggplot(data = north_east_data) +
+(mosaic_plot_ne <-north_east_data %>%
+    arrange(Demographic) %>%    
+    mutate(Demographic=factor(Demographic, levels=c("Under $25,000", "$25,000 - $49,999", "$50,000 - $74,999", "$75,000 - $99,999", "$100,000+"))) %>%
+    ggplot() +
     geom_mosaic(aes(x=product( Demographic, State_Abbr ),
                     fill = voted_for, colour = Demographic, alpha = winner_amongst_group,), offset = 0.05) +
     scale_alpha_manual(values =c(.5,1)) +
@@ -192,13 +195,16 @@ north_east_data <- subset(combined_facet, region == "North East")
                        axis.line = element_blank(),
                     #   axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
                        axis.title.y=element_blank(),
-                       axis.text.y=element_blank(),
-                       axis.ticks.y=element_blank(),
+                     #  axis.text.y=element_blank(),
+                      # axis.ticks.y=element_blank(),
                        axis.text.x=element_blank(),
                        axis.ticks.x=element_blank())
 )
 
-(mosaic_plot_ds <- ggplot(data = deep_south_data) +
+(mosaic_plot_ds <- deep_south_data %>%
+    arrange(Demographic) %>%    
+    mutate(Demographic=factor(Demographic, levels=c("Under $25,000", "$25,000 - $49,999", "$50,000 - $74,999", "$75,000 - $99,999", "$100,000+"))) %>% 
+    ggplot() +
     geom_mosaic(aes(x=product( Demographic, State_Abbr ),
                     fill = voted_for, colour = Demographic, alpha = winner_amongst_group,), offset = 0.05) +
     scale_alpha_manual(values =c(.5,1)) +
@@ -217,9 +223,18 @@ north_east_data <- subset(combined_facet, region == "North East")
 )
 
 
+# Reorder demographics into ascending order
+north_east_data$Demographic <- factor(north_east_data$Demographic, levels=c("Under $25,000", "$25,000 - $49,999", "$50,000 - $74,999", "$75,000 - $99,999", "$100,000+"))
 
-library(gridExtra)
+$Demographic <- factor(north_east_data$Demographic, levels=c("Under $25,000", "$25,000 - $49,999", "$50,000 - $74,999", "$75,000 - $99,999", "$100,000+"))
 
-grid.arrange(mosaic_plot_ds, mosaic_plot_ne, ncol=2)
 
+grid.arrange(mosaic_plot_ds, mosaic_plot_ne, ncol=2, bottom = "States")
+
+
+(mosaic_plot_ne <- ggplot(data = north_east_data) +
+    geom_mosaic(aes(x=product( Demographic, State_Abbr ),
+                    fill = voted_for, colour = Demographic, alpha = winner_amongst_group,), offset = 0.05) +
+    scale_alpha_manual(values =c(.5,1)) 
+)
                              

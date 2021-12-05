@@ -80,7 +80,40 @@ expanded_trump <- expanded_trump %>% select(-"Biden_%")
 
 # Combine the two data sets 
 combined <- rbind(expanded_biden,expanded_trump)
-
 ```
 
+Now we are going to plot our data. This plot will show us infomation on demographic and how this varies by state, and what proportion voted for who. 
+```
+# Library 
+library(ggmosaic)
 
+# Reorder demographics into ascending order
+combined$Demographic <- factor(combined$Demographic, levels=c("Under $25,000", "$25,000 - $49,999", "$50,000 - $74,999", "$75,000 - $99,999", "$100,000+"))
+
+# Plot mosaic figure showing proportion of demographic to total population in 
+# each state, and how they voted. 
+(mosaic_plot <- ggplot(data = combined) +
+    geom_mosaic(aes(x=product( Demographic, State_Abbr ),
+                    fill = voted_for, colour = Demographic), offset = 0.05) + 
+       theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = .5)) + 
+    labs(y="Income Demographic", x="Voted for: State", title = "Exit Poll") +
+    scale_fill_manual(values = c("Trump" = "firebrick3", "Biden" = "deepskyblue3"))
+  )
+```
+![image](https://user-images.githubusercontent.com/91271151/144751769-84f1cc4a-4eab-43a7-aea0-0dfabd262972.png)
+
+However, there is limitations with gg_mosaic. Mosaic plots idealy are able to show more catagorical variables than this for example by the use of transparency. However when using this in gg_mosaic it causes complications. Try showing who was the overall winner in each group using the alpha argument in the geom_mosaic aesthetic. 
+
+```
+(mosaic_plot_alpha <- ggplot(data = combined) +
+    geom_mosaic(aes(x=product( Demographic, State_Abbr ),
+                    fill = voted_for, colour = Demographic, alpha = Winner,), offset = 0.05) +
+    scale_alpha_manual(values =c(.5,1)) +
+    theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = .5)) + 
+    labs(y="Income Demographic", x="Voted for: State", title = "Exit Poll") +
+    scale_fill_manual(values = c("Trump" = "firebrick3", "Biden" = "deepskyblue3"))
+)
+```
+![image](https://user-images.githubusercontent.com/91271151/144751787-dc9c6cc9-1479-49b3-ac19-d71e05f89423.png)
+
+We now have a plot which displays four catagorical variables clearly. However, a complication with gg_mosaic is that it is very hard to alter axis labels. This has made our axis a little complex and comprimised the clarity of out plot. 

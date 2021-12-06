@@ -5,13 +5,17 @@ High dimentional data refers to data frames which contain many variables and or 
 
 ## Learning Objectives:
 
-Facetting creates mutiple plots based on another variable 
+
+First, download the repository locally through this link:
+
+###Facetting creates mutiple plots based on another variable 
 
 Import the car_thefts data set
 
+### Mosaic Plots
+
 Catagorical variables with many levels are hard to plot. This is because they fundimentally take up a lot of space. One way to tackle this is to create manageable groups to reduce the number of levels. 
 *make, model, 
-
 
 When collecting data in a format such as survey it can become highly dimentional. There can be many catagorical columns with many repeating rows (count data). One way to visualise this is through the use of mosaic plots. 
 
@@ -246,7 +250,7 @@ grid.arrange(mosaic_plot_ds, mosaic_plot_ne, ncol=2, bottom = "States")
 
 ![image](https://user-images.githubusercontent.com/91271151/144762600-ecdd201d-9008-4475-a16a-a1fb462d7dca.png)
 
-we now have a plot which clearly displays 5 catagorical variables.
+We now have a plot which clearly displays 5 catagorical variables. Ideally this would contain a figure caption, perhaps giving the full names of each state instead of just the abbreviations. We could do this when knitting into a PDF for example using fig.cap = "". 
 
 ### Plotly
 
@@ -256,7 +260,7 @@ Interactive visuals can have a particular use in displaying high density or high
 
 Static vs. interactive: 
        - Static useful for reports useful for displaying what you the creator has highlighted 
-       - User can update an interactive graphic e.g. drill down to specific data points using                 hover info or focusing on subsets of data by selecting or deselecting groups 
+       - User can update an interactive graphic e.g. drill down to specific data points using hover info or focusing on subsets of data by selecting or deselecting groups 
        - Simple interaction improve ability of data exploration
 
 However, we must remember that interactivity alone does not make a good graphic. We must always refer to the best practices of data visualisation and design principles.

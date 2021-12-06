@@ -3,6 +3,7 @@
 
 High dimentional data refers to data frames which contain many variables and or levels. They are difficult to plot as only so much infomation can exist on a single figure. Here we will walk through several approaches to displaying multiple varibles whilst remaining clear and manageable.
 
+## Learning Objectives:
 
 Facetting creates mutiple plots based on another variable 
 
@@ -246,4 +247,18 @@ grid.arrange(mosaic_plot_ds, mosaic_plot_ne, ncol=2, bottom = "States")
 ![image](https://user-images.githubusercontent.com/91271151/144762600-ecdd201d-9008-4475-a16a-a1fb462d7dca.png)
 
 we now have a plot which clearly displays 5 catagorical variables.
+
+### Plotly
+
+Plotly is a package which acts as an interface to the plotly javascript graphing library. It wraps javascript for multiple coding languages including R, Python and Matlab. It produces amazing interactive and animated graphics of browser/ html based charts and visualisations with little code. Although plotly is relively simple to use, it is made even simplier by being able to improve existing ggplot code using ggplotly().
+
+Interactive visuals can have a particular use in displaying high density or high dimentional data. Interactive visualisations are beocming increasingly popular. This is especially within popular web based news media. 
+
+Static vs. interactive: 
+       - Static useful for reports useful for displaying what you the creator has highlighted 
+       - User can update an interactive graphic e.g. drill down to specific data points using                 hover info or focusing on subsets of data by selecting or deselecting groups 
+       - Simple interaction improve ability of data exploration
+
+However, we must remember that interactivity alone does not make a good graphic. We must always refer to the best practices of data visualisation and design principles.
+
 

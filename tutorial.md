@@ -343,5 +343,7 @@ ggplotly(make_plot)
 ggplotly(state_plot)
 ```
 
+In these plots, all 6 of the variables are available to the viewer to find infomation about by hovering over data points. Data can be explored by selecting and deselecting data points. All items in the legend can be selected and deselected by double clickling. 
+
 
 

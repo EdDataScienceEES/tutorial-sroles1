@@ -71,7 +71,6 @@ library(htmlwidgets)
 
 saveWidget(state_plot, "graph.html")
 
-
 htmltools::save_html(
   html = htmltools::as.tags(
     x = plotly::toWebGL(state_plot),

@@ -220,4 +220,20 @@ north_east_data <- subset(combined_region, region == "North East")
 grid.arrange(mosaic_plot_ds, mosaic_plot_ne, ncol=2, bottom = "States /n/ fig cap")
 
 
-                             
+
+
+
+# test ----
+
+(mosaic_plot <- ggplot(data = combined_region) +
+   geom_mosaic(aes(x=product( Demographic, State_Abbr ),
+                   fill = voted_for, colour = Demographic), offset = 0.05) +
+   labs(y="Votes for:Income Demographic", x="Voted for: State", title = "Exit Poll") +
+   scale_fill_manual(values = c("Trump" = "firebrick3", "Biden" = "deepskyblue3")) +
+   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = .5),
+         panel.border = element_blank(),
+                      panel.grid.minor = element_blank(),
+                      plot.title = element_text(hjust = 0.5),
+                      axis.line = element_blank())+
+   facet_wrap("region")
+)

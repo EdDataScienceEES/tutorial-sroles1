@@ -8,7 +8,13 @@ High dimentional data refers to data frames which contain many variables and or 
 
 First, download the repository locally through this link:
 
+# Parallel Coordinate Plots
 
+Parallel coordinates for multidimensional exploratory data analysis.
+
+
+
+![image](https://user-images.githubusercontent.com/91271151/145277727-8e526da3-7eb1-40ec-ab41-9f64fe4a404a.png)
 
 ### Mosaic Plots
 
@@ -344,6 +350,7 @@ ggplotly(state_plot)
 ```
 
 In these plots, all 6 of the variables are available to the viewer to find infomation about by hovering over data points. Data can be explored by selecting and deselecting data points. All items in the legend can be selected and deselected by double clickling. 
+
 
 
 

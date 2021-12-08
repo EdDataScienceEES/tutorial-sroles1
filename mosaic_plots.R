@@ -81,7 +81,7 @@ combined$Demographic <- factor(combined$Demographic, levels=c("Under $25,000", "
     geom_mosaic(aes(x=product( Demographic, State_Abbr ),
                     fill = voted_for, colour = Demographic), offset = 0.05) + 
        theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = .5)) + 
-    labs(y="Income Demographic", x="Voted for: State", title = "Exit Poll") +
+    labs(y="Votes for:Income Demographic", x="Voted for: State", title = "Exit Poll") +
     scale_fill_manual(values = c("Trump" = "firebrick3", "Biden" = "deepskyblue3")) +
     theme_bw() + theme(panel.border = element_blank(),
                        panel.grid.minor = element_blank(),
@@ -96,10 +96,10 @@ combined$Demographic <- factor(combined$Demographic, levels=c("Under $25,000", "
 # each state, and how they voted. 
 (mosaic_plot_alpha <- ggplot(data = combined) +
     geom_mosaic(aes(x=product( Demographic, State_Abbr ),
-                    fill = voted_for, colour = Demographic, alpha = winner_amongst_group,), offset = 0.05) +
+                    fill = voted_for, alpha = winner_amongst_group,), offset = 0.05) +
     scale_alpha_manual(values =c(.5,1)) +
     theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = .5)) + 
-    labs(y="Income Demographic", x="Voted for: State", title = "Exit Poll") +
+    labs(y="Votes for:Income Demographic", x="Voted for: State", title = "Exit Poll") +
     scale_fill_manual(values = c("Trump" = "firebrick3", "Biden" = "deepskyblue3"))+
     theme_bw() + theme(panel.border = element_blank(),
                        panel.grid.minor = element_blank(),
@@ -108,9 +108,7 @@ combined$Demographic <- factor(combined$Demographic, levels=c("Under $25,000", "
 )
 
 
-# Repetition of the previous section but to allow for facetting according to region
-
-
+# Repetition of the previous section but to allow for facetting according to region ---- 
 
 
 # Filter data set for only wage-bracket demographics
@@ -144,40 +142,35 @@ deep_south$region <- "Deep South"
 region_data <- rbind(north_east, deep_south)
 
 
-
-
 # Convert rows to count data for the percentage who voted for biden and the
 # percentage who voted for trump. 
 
 # Create two new data frames in which to expand the rows, also deletes column 
 # where data was extracted from
-expanded_biden_facet <- expandRows(region_data, "Biden_%")
-expanded_trump_facet <- expandRows(region_data, "Trump_%")
+expanded_biden_region<- expandRows(region_data, "Biden_%")
+expanded_trump_region <- expandRows(region_data, "Trump_%")
 
 # Expand rows to show the proportion of the total population each demographic 
 # makes up
-expanded_biden_facet <- expandRows(expanded_biden_facet, "proportion")
-expanded_trump_facet <- expandRows(expanded_trump_facet, "proportion")
+expanded_biden_region <- expandRows(expanded_biden_region, "proportion")
+expanded_trump_region <- expandRows(expanded_trump_region, "proportion")
 
 # Add new column name to distinguish Trump voters from Biden voters
-expanded_trump_facet$voted_for <- "Trump"
-expanded_biden_facet$voted_for <- "Biden"
+expanded_trump_region$voted_for <- "Trump"
+expanded_biden_region$voted_for <- "Biden"
 
 # Remove names of column which has been deleted from the other data set in order
 # to make them match, ready to combine
-expanded_biden_facet <- expanded_biden_facet %>% select(-"Trump_%")
-expanded_trump_facet <- expanded_trump_facet %>% select(-"Biden_%")
+expanded_biden_region <- expanded_biden_region %>% select(-"Trump_%")
+expanded_trump_region <- expanded_trump_region %>% select(-"Biden_%")
 
 # Combine the two data sets 
-combined_facet <- rbind(expanded_bi# Reorder demographics into ascending order
-den_facet,expanded_trump_facet)
+combined_region <- rbind(expanded_biden_region,expanded_trump_region)
 
-deep_south_data <- subset(combined_facet, region == "Deep South")
-north_east_data <- subset(combined_facet, region == "North East")
+deep_south_data <- subset(combined_region, region == "Deep South")
+north_east_data <- subset(combined_region, region == "North East")
 
-deep_south_data <- deep_south_data[order(deep_south_data$Demographic, decreasing = TRUE), ]
-north_east_data <- north_east_data[order(north_east_data$Demographic, decreasing = FALSE), ]
-
+# North East plot 
 (mosaic_plot_ne <-north_east_data %>%
     arrange(Demographic) %>%    
     mutate(Demographic=factor(Demographic, levels=c("Under $25,000", "$25,000 - $49,999", "$50,000 - $74,999", "$75,000 - $99,999", "$100,000+"))) %>%
@@ -186,7 +179,7 @@ north_east_data <- north_east_data[order(north_east_data$Demographic, decreasing
                     fill = voted_for, colour = Demographic, alpha = winner_amongst_group,), offset = 0.05) +
     scale_alpha_manual(values =c(.5,1)) +
     theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = .5)) + 
-    labs(y="Income Demographic", x="CT        NH       NJ       NY       PA"      , title = "North East") +
+    labs(x="CT        NH       NJ       NY       PA"      , title = "North East") +
     scale_fill_manual(values = c("Trump" = "firebrick3", "Biden" = "deepskyblue3")) +
     theme_bw() + theme(panel.border = element_blank(),
                        panel.grid.minor = element_blank(),
@@ -195,12 +188,13 @@ north_east_data <- north_east_data[order(north_east_data$Demographic, decreasing
                        axis.line = element_blank(),
                     #   axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
                        axis.title.y=element_blank(),
-                     #  axis.text.y=element_blank(),
-                      # axis.ticks.y=element_blank(),
+                       axis.text.y=element_blank(),
+                       axis.ticks.y=element_blank(),
                        axis.text.x=element_blank(),
                        axis.ticks.x=element_blank())
 )
 
+# Deep South plot
 (mosaic_plot_ds <- deep_south_data %>%
     arrange(Demographic) %>%    
     mutate(Demographic=factor(Demographic, levels=c("Under $25,000", "$25,000 - $49,999", "$50,000 - $74,999", "$75,000 - $99,999", "$100,000+"))) %>% 
@@ -209,7 +203,7 @@ north_east_data <- north_east_data[order(north_east_data$Demographic, decreasing
                     fill = voted_for, colour = Demographic, alpha = winner_amongst_group,), offset = 0.05) +
     scale_alpha_manual(values =c(.5,1)) +
     theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = .5)) + 
-    labs(y="Income Demographic", x="AL        FL         MS         SC         TX"      , title = "Deep South") +
+    labs(y="Votes for:Income Demographic", x="AL        FL         MS         SC         TX"      , title = "Deep South") +
     scale_fill_manual(values = c("Trump" = "firebrick3", "Biden" = "deepskyblue3")) +
     theme_bw() + theme(panel.border = element_blank(),
                        panel.grid.minor = element_blank(),
@@ -222,19 +216,8 @@ north_east_data <- north_east_data[order(north_east_data$Demographic, decreasing
                        legend.position = "none")
 )
 
-
-# Reorder demographics into ascending order
-north_east_data$Demographic <- factor(north_east_data$Demographic, levels=c("Under $25,000", "$25,000 - $49,999", "$50,000 - $74,999", "$75,000 - $99,999", "$100,000+"))
-
-$Demographic <- factor(north_east_data$Demographic, levels=c("Under $25,000", "$25,000 - $49,999", "$50,000 - $74,999", "$75,000 - $99,999", "$100,000+"))
+# Arrange both plots together to give the appearance of a facet 
+grid.arrange(mosaic_plot_ds, mosaic_plot_ne, ncol=2, bottom = "States /n/ fig cap")
 
 
-grid.arrange(mosaic_plot_ds, mosaic_plot_ne, ncol=2, bottom = "States")
-
-
-(mosaic_plot_ne <- ggplot(data = north_east_data) +
-    geom_mosaic(aes(x=product( Demographic, State_Abbr ),
-                    fill = voted_for, colour = Demographic, alpha = winner_amongst_group,), offset = 0.05) +
-    scale_alpha_manual(values =c(.5,1)) 
-)
                              

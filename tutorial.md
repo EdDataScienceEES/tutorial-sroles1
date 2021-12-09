@@ -12,9 +12,72 @@ First, download the repository locally through this link:
 
 Parallel coordinates for multidimensional exploratory data analysis.
 
+```
+# Clear environment
+rm(list=ls()) 
+
+# Load libraries
+library(GGally)
+
+# Read in agricultural data
+agri_data<- read.csv("data/us_agri.csv")
+
+# Investigate data frame structure
+str(agri_data)
+```
+We can see that we have 4 continuous variables and a catagorical variable which groups the rows into size of farm. Now we are going to plot parallel coordinates plot to display all of the varibles.
+```
+# Plot parallel coordinates plot
+(parcoord_plot <- ggparcoord(agri_data,
+           columns = 1:4, groupColumn = 5, # Variable columns on x axis and which to group lines by
+           scale = "center", # Standardise and center variables
+           title = "Relative Price Per Unit Variable by Farm", # Title
+           alphaLines = 0.6)) # Opacity of lines
+```
+
+![image](https://user-images.githubusercontent.com/91271151/145380394-525b9c40-0414-43ce-bb67-9099686174c3.png)
 
 
-![image](https://user-images.githubusercontent.com/91271151/145277727-8e526da3-7eb1-40ec-ab41-9f64fe4a404a.png)
+This plot is not useful for extracting specific values but is for viewing overall trends in the data. A question which may be posed by looking at this graph is why do small farms own land which is valued higher than larger farms? 
+However, this style of plot can become confusing and unclear when more rows of data are added. With plotly we can plot the same style of graph but allow for viewer interaction to make the trends and clear isolate parameters of interest. 
+
+Plotly parellel coordinate plots are not perfect however. They struggle with customisation of labels, legends and catagorical data. We have implemented two 'work-arounds' in this code to overcome some of these problems. The first requires us to assign each level of the 'size' catagory a numerical value.
+```
+# Load libraries
+library(plotly)
+library(tidyverse)
+
+# Add column giving 'size' numerical values for parcoords plot
+agri_data$size_plotly <- ifelse(agri_data$size == "Large", 1,
+                              ifelse(agri_data$size == "Small", 0, 0.5))
+
+```
+
+We will now plot the parallel coordinate graph. The numerical size column is a work-around to assign each level a colour. It also allows us to add a make-shift legend and seperate the levels. We add size as an extra variable and use our assinged numerical values to distinguish them. We will use the label of this column to distingush each level.
+```
+# Plot  a plotly parallel coordinate plot
+plotly_parcoord <- agri_data %>%
+  plot_ly(type = 'parcoords', line = list(color = ~size_plotly, # Distinguish sizes into three colours
+                                          colorscale = list(c(0,'blue'),c(0.5,'green'),c(1,'red'))),
+                                dimensions = list( # Define the scale ranges of each variable  
+                        list(range = c(0,1.5),
+                             label = '          Size: Large \r\n       
+                    Medium \r\n
+                 Small', values = ~size_plotly), # A make-shift legend         
+                        list(range = c(0,4),
+                             label = 'capital', values = ~p.capital),
+                        list(range = c(0,4),
+                             constraintrange = c(0,4),
+                             label = 'land', values = ~p.land),
+                        list(range = c(0,4),
+                             label = 'labor', values = ~p.labor),
+                        list(range = c(0,4),
+                             label = 'crop', values = ~p.crop))
+          )
+
+plotly_parcoord # Call plot
+```
+
 
 ### Mosaic Plots
 

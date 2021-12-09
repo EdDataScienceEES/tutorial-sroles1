@@ -1,28 +1,30 @@
-# Visualising Highly Dimentional Data
+# Visualising Multi-dimensional Data
 ## 
 
-High dimentional data refers to data frames which contain many variables and or levels. They are difficult to plot as only so much infomation can exist on a single figure whilst maintaining clarity. This tutorial is an introduction to several possible approaches to displaying multiple varibles whilst keeping plots clear and manageable. We break down the tutorial into approaches to display:
-- Multiple catagorical variables
-- Multiple continuous variables
-- A Mixture of catagorical and continuous
+High dimentional data refers to data frames which contain many variables and or levels. They are difficult to plot as only so much infomation can exist on a single figure whilst maintaining clarity. This tutorial is an introduction to several possible approaches to displaying multiple varibles whilst keeping plots clear and manageable. We will consider the use of interactive plots using the 'plotly' package to suppliment our figures throughout. The tutorial is broken down into the following sections:
 
-We will also consider the use of interactive plots using the 'plotly' package to suppliment our figures.
+
+#### <a href="#catagoricalvariables"> (1) Mosaic plots: Multiple catagorical variables </a>
+#### <a href="#plotlyinto">  (2) Plotly: An introduction to interactive visualisation </a>
+#### <a href="#continvar"> (3) Parallel coordinate plots: Multiple continuous variables </a>
+#### <a href="#plotlyconvar"> (3.1) Plotly: Multiple continuous variables </a>
+#### <a href="#mixedvar"> (4) Faceted plots: A Mixture of catagorical and continuous </a>
+#### <a href="#plotlycatcont"> (4.1) Plotly: A Mixture of catagorical and continuous </a>
+
+
 
 ## Learning Objectives:
-- To understand the dificulties of plotting high dimentional data
-- To be able to plot diferent types of high dimentional data using approaches shown
+- To understand the dificulties of plotting multi-dimentional data
+- To be able to plot diferent types of multi-dimentional data using the approaches shown
 - To understand the uses, benefits and limitations of using interactive graphs
+- To practice data wrangling and exploration techniques useful when handling multi-dimentional data
 
 First, download the repository locally through this link:
 
-### Mosaic Plots
+<a name="catagoricalvariables"></a>
+# Mosaic plots: Multiple catagorical variables 
 
-Catagorical variables with many levels are hard to plot. This is because they fundimentally take up a lot of space. One way to tackle this is to create manageable groups to reduce the number of levels. 
-*make, model, 
-
-When collecting data in a format such as survey it can become highly dimentional. There can be many catagorical columns with many repeating rows (count data). One way to visualise this is through the use of mosaic plots. 
-
-Import exit_poll data set 
+Mosaic plots are derived from barcharts and spineplots and are used for displaying multiple catagorical variables. They are formed of a series of tiles whose sizes are proportional to the number of observations in their particular intersection. Mosaic plots lend themselves best to survey data. Survey data can become highly dimentional due with many catagorical columns with many repeating rows (count data) which will influence the size of each tile. 
 
 ```
 # clear environment
@@ -58,7 +60,7 @@ filt <- filt %>% filter(State_Abbr == "CA" |
                             State_Abbr == "FL" |
                            State_Abbr == "NY")
 ```
-Our data frame originates from an exit poll survey taken nationwide. However, some 'wrangling' has already occured and what we are presented with is a summary data frame. Mosaic plots are best for displaying the raw data. If we had collected with data ourselves, using a mosaic plot would summarise our data us without the need for extra rangling. We will take a backwards step to return the data to a form representative of the raw form to allow the mosaic plot to deal with the count data it needs. 
+Our data frame originates from an exit poll survey taken nationwide. However, some 'wrangling' has already occured and what we are presented with is a summary data frame. Mosaic plots are best for displaying the raw data. If we had collected with data ourselves, using a mosaic plot would summarise our data for us without the need for the extra wrangling which has already occured. We will take a backwards step to return the data to a form representative of its raw form to allow the mosaic plot to deal with the count data it is best with. 
 
 ```
 # library 
@@ -67,13 +69,13 @@ library(splitstackshape)
 # Convert rows to count data for the percentage who voted for biden and the
 # percentage who voted for trump. 
 
-# Create two new data frames in which to expand the rows, also deletes column 
-# where data was extracted from
+# Create two new data frames in which to expand the rows and delete column 
+# where data was extracted from.
 expanded_biden <- expandRows(filt, "Biden_%")
 expanded_trump <- expandRows(filt, "Trump_%")
 
 # Expand rows to show the proportion of the total population each demographic 
-# makes up
+# makes up.
 expanded_biden <- expandRows(expanded_biden, "proportion")
 expanded_trump <- expandRows(expanded_trump, "proportion")
 
@@ -90,17 +92,16 @@ expanded_trump <- expanded_trump %>% select(-"Biden_%")
 combined <- rbind(expanded_biden,expanded_trump)
 ```
 
-Now we are going to plot our data. This plot will show us infomation on demographic and how this varies by state, and what proportion voted for who. 
+Now we are going to plot our data. This plot will show us what proportion of each demographic voted for Trump and Biden, the proportion each wage demographic makes up of the whole population, and how these varies by state. 
 ```
 # Library 
 library(ggmosaic)
 
-# Reorder demographics into ascending order
+# Reorder demographics into ascending order 
 combined$Demographic <- factor(combined$Demographic, levels=c("Under $25,000", "$25,000 - $49,999", "$50,000 - $74,999",
 "$75,000 - $99,999", "$100,000+"))
 
-# Plot mosaic figure showing proportion of demographic to total population in 
-# each state, and how they voted. 
+# Plot mosaic figure 
 (mosaic_plot <- ggplot(data = combined) +
     geom_mosaic(aes(x=product( Demographic, State_Abbr ),
                     fill = voted_for, colour = Demographic), offset = 0.05) + 
@@ -116,14 +117,13 @@ combined$Demographic <- factor(combined$Demographic, levels=c("Under $25,000", "
 
 ![image](https://user-images.githubusercontent.com/91271151/144756569-1479db89-9eab-4a71-88fa-0900aa2c5a9c.png)
 
-However, there is limitations with gg_mosaic. Mosaic plots idealy are able to show more catagorical variables than this for example by the use of transparency. However when using this in gg_mosaic it causes complications. Try showing who was the overall winner in each group using the alpha argument in the geom_mosaic aesthetic. 
+This plot is clear, informative and well labled. However, there is limitations to gg_mosaic. Mosaic plots idealy are able to show more catagorical variables than is displayed here. For example, by the use of transparency to distinguish between another variable. However when using this in gg_mosaic it causes complications. Try showing who was the overall winner in each group using the alpha argument in the geom_mosaic aesthetic. 
 
 ```
-# Plot mosaic figure showing proportion of demographic to total population in 
-# each state, and how they voted. 
+# Plot mosaic figure
 (mosaic_plot_alpha <- ggplot(data = combined) +
     geom_mosaic(aes(x=product( Demographic, State_Abbr ),
-                    fill = voted_for, colour = Demographic, alpha = Winner,), offset = 0.05) +
+                    fill = voted_for, colour = Demographic, alpha = Winner,), offset = 0.05) + # Alpha argument included 
     scale_alpha_manual(values =c(.5,1)) +
     theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = .5)) + 
     labs(y="Income Demographic", x="Voted for: State", title = "Exit Poll") +
@@ -136,10 +136,11 @@ However, there is limitations with gg_mosaic. Mosaic plots idealy are able to sh
 ```
 ![image](https://user-images.githubusercontent.com/91271151/144756533-49af96f8-e0f5-4635-8a9f-07d6ef38b6d8.png)
 
-We now have a plot which displays four catagorical variables. However, a complication with gg_mosaic is that it is very hard to alter axis labels. This is due to the fact that although we know that variables are discrete, in gg_mosaic they are continuous as this is how the proportionate sizes of boxes based on the count data are generated. This means it is not possible to customise axis, in an intuitive way. This has made our axis a little complex and comprimised the clarity of out plot, as is seen on the x-axis where there are redundant labels. In the next plot we will show one approach to tackling this problem.
+We now have a plot which displays four catagorical variables. However, a complication with gg_mosaic is that it is very hard to alter axis labels. This is due to the fact that although we know that variables are essentially discrete, in gg_mosaic they are continuous as this is how the proportionate sizes of boxes based on the count data are generated. This means it is not possible to customise axis, in an intuitive way. This has made our axis a little complex and comprimised the clarity of out plot, as is seen on the x-axis where there are redundant labels. In the next plot we will show one approach to tackling this problem.
 
-Now, if we wanted we could take this plot a step further and display a fifth categorical variable- region. We cannot use facet_wrap() because in this case we want our x-axis to be diferent according to which states are found in a region. If we had equivilent data for the 2016 exit poll we could facet wrap by year. However, we will instead create two seperate plots based on region and combine them using grid.arrange(). We will repeat the previous code and create then add in another varible (region) to display. We remove several aspects of the graphs in order to combine them cleanly. The x-axis labels have been improved, see if you can spot the way we got around the dificulites with changing axis in gg_mosaic.
+If we wanted we could take this plot a step further and display a fifth categorical variable- region. We want to use a #### <a href="#mixedvar">faceted</a> approach but cannot use facet_grid() or facet_wrap() because in this case we want our x-axis to be diferent according to which states are found in a region. If we had equivilent data for the 2016 exit poll we could use facet_wrap() by year as the same x axis would be required. We will instead use a 'work-around' which creates two seperate plots based on region and combines them using grid.arrange(). We will repeat the previous code and add in another varible (region) to display. You will have to remove several aspects of the graphs in order to combine them cleanly. We have also improved the clarity of the x-axis labels, see if you can spot the way we got around the dificulites with changing axis labels in gg_mosaic.
 ```
+
 # Repetition of the previous section but to allow for facetting according to region 
 
 
@@ -258,23 +259,19 @@ grid.arrange(mosaic_plot_ds, mosaic_plot_ne, ncol=2, bottom = "States")
 
 We now have a plot which clearly displays 5 catagorical variables. Ideally this would contain a figure caption, perhaps giving the full names of each state instead of just the abbreviations. We could do this when knitting into a PDF for example using fig.cap = "". 
 
+<a name="plotlyinto"></a>
+# Plotly: An introduction to interactive visualisation
 
-### Plotly
+Plotly is a package which acts as an interface to the plotly javascript graphing library. It wraps javascript for multiple coding languages including R, Python and Matlab. It produces interactive and animated graphics of browser/ html based charts and visualisations with little code. Although plotly is relitively simple to use, it is made even simplier by being able to improve existing ggplot code using ggplotly().
 
-Plotly is a package which acts as an interface to the plotly javascript graphing library. It wraps javascript for multiple coding languages including R, Python and Matlab. It produces amazing interactive and animated graphics of browser/ html based charts and visualisations with little code. Although plotly is relively simple to use, it is made even simplier by being able to improve existing ggplot code using ggplotly().
+Interactive visualisations are beocming increasingly popular especially within popular web based news media. Interactive visuals have a particular use in displaying high density or multi-dimentional data and allowing users to gain a better insight into the data and hone-in on specific data points using hover info or focusing on subsets of data by selecting or deselecting groups or a they are curious about.
 
-Interactive visuals can have a particular use in displaying high density or high dimentional data. Interactive visualisations are beocming increasingly popular. This is especially within popular web based news media. 
+However, we must remember that interactivity alone does not make a good graphic. We must always refer to the best practices of data visualisation and design principles and know that static plots are better suited to certain scenarios. For example static plots are best for reports which emphasise what you the creator has highlighted.
 
-Static vs. interactive: 
-       - Static useful for reports useful for displaying what you the creator has highlighted 
-       - User can update an interactive graphic e.g. drill down to specific data points using hover info or focusing on subsets of data by selecting or deselecting groups 
-       - Simple interaction improve ability of data exploration
+<a name="continvar"></a>
+# Parallel coordinate plots: Multiple continuous variable
 
-However, we must remember that interactivity alone does not make a good graphic. We must always refer to the best practices of data visualisation and design principles.
-
-# Parallel Coordinate Plots
-
-Parallel coordinates for multidimensional exploratory data analysis.
+Parallel coordinate plots can display a large number of continuous variables along the x axis, each with its own vertical axis that has its own scale. Data is then plotted as series of lines which connect across each axis. Groups can be distinguished using colour and then distinct relationships can be seen by patterns in their response to variables. 
 
 ```
 # Clear environment
@@ -286,7 +283,7 @@ library(GGally)
 # Read in agricultural data
 agri_data<- read.csv("data/us_agri.csv")
 
-# Investigate data frame structure
+# Investigate data frame structure and class of each variable
 str(agri_data)
 ```
 We can see that we have 4 continuous variables and a catagorical variable which groups the rows into size of farm. Now we are going to plot parallel coordinates plot to display all of the varibles.
@@ -302,10 +299,12 @@ We can see that we have 4 continuous variables and a catagorical variable which 
 ![image](https://user-images.githubusercontent.com/91271151/145380394-525b9c40-0414-43ce-bb67-9099686174c3.png)
 
 
-This plot is not useful for extracting specific values but is for viewing overall trends in the data. A question which may be posed by looking at this graph is why do small farms own land which is valued higher than larger farms? 
-However, this style of plot can become confusing and unclear when more rows of data are added. With plotly we can plot the same style of graph but allow for viewer interaction to make the trends and clear isolate parameters of interest. 
+This plot is not useful for extracting specific values but is effective for viewing overall trends in the data. A question which may be posed by looking at this graph is why do small farms generally own land which is valued higher than larger farms? We used the colours red, green and blue to seperate each catagory, an improvement to this graph would be to consider a colour blind friendly colour palet. This style of plot can become confusing and unclear when more rows of data are added. 
 
-Plotly parellel coordinate plots are not perfect however. They struggle with customisation of labels, legends and catagorical data. We have implemented two 'work-arounds' in this code to overcome some of these problems. The first requires us to assign each level of the 'size' catagory a numerical value.
+<a name="plotlyconvar"></a>
+## Plotly: Multiple continuous variables
+With plotly we can plot the same style of graph but allow for viewer interaction which can help to make trends clear by isolating parameters or regions of interest. However, Plotly parellel coordinate plots are not perfect. They struggle with customisation of labels, legends and catagorical data. We have implemented two 'work-arounds' in this code to overcome some of these problems. The first requires us to assign each level of the 'size' catagory a numerical value. 
+
 ```
 # Load libraries
 library(plotly)
@@ -317,7 +316,8 @@ agri_data$size_plotly <- ifelse(agri_data$size == "Large", 1,
 
 ```
 
-We will now plot the parallel coordinate graph. The numerical size column is a work-around to assign each level a colour. It also allows us to add a make-shift legend and seperate the levels. We add size as an extra variable and use our assinged numerical values to distinguish them. We will use the label of this column to distingush each level.
+We will now plot the parallel coordinate graph. The numerical size column is a work-around to assign each level a colour and allows us to add a make-shift legend to seperate the levels. To do this we add size as an extra variable and use our assinged numerical values to distinguish each level. We will use the label of this column as a make-shift legend.
+
 ```
 # Plot  a plotly parallel coordinate plot
 plotly_parcoord <- agri_data %>%
@@ -343,16 +343,16 @@ plotly_parcoord # Call plot
 ```
 Output:
 ![newplot (2)](https://user-images.githubusercontent.com/91271151/145387122-654df405-a76c-47d8-bfa0-0d3d48d02660.png)
-Example of how each level can be filtered
+Example of how each level can be filtered:
 ![newplot](https://user-images.githubusercontent.com/91271151/145386946-0f712f81-6a5f-4ed1-8292-518f08dcc056.png)
-Example of how mutiple conditions can be set to isolate data
+Example of how mutiple conditions can be set to isolate data:
 ![newplot (1)](https://user-images.githubusercontent.com/91271151/145387128-ee7eeae5-27ec-4b17-99e6-b4fad5cd0091.png)
 
+<a name="mixedvar"></a>
+# Faceted plots: A Mixture of catagorical and continuous
 
-# Facetting
-Facetting creates mutiple plots based on a catagorical variable. 
+Facet plots are figures made up of mutiple subpplots based on a catagorical variable. This creates a panel-like plot with each subplot displaying the same variables but with diferent groupings. Facet plots are also useful for dealing with catagorical variables with a large number of levels. This is done by grouping these levels and facetting by these groups.
 
-First clear the R environment. Then load in the libraries, the car thefts data frame and explore it's columns and their levels. 
 ```
 # clear environment
 rm(list=ls())
@@ -369,7 +369,8 @@ ulst <- lapply(theft_data, unique)
 ulst
 ```
 
-We can see that the make_and_model column is providing us with two bits of infomation which could be displayed clearer. So, we seperate the columns. 
+We can see that the make_and_model column is has 48 levels and provides us with two bits of infomation which could be displayed clearer and lends itself to a grouping varible. So, we seperate the columns into make and model, make being the variable we will use to group. 
+
 ```
 # Create new data frame with make and model extracted and seperated
 make_model_sep <- colsplit(theft_data$make_and_model," ",c("make","model"))
@@ -378,7 +379,7 @@ theft_data <- cbind(make_model_sep, theft_data)
 # Remove original make_and_model column
 theft_data <- select(theft_data, -make_and_model)
 ```
-Now we are going to plot our data. Our plot will display infomation about the make, model and thefts.
+Now we are going to plot our data. Our plot will display infomation about the make, model and number of thefts.
 ```
 # Plot car thefts facetted by make
 
@@ -401,9 +402,13 @@ theft_data$make <- reorder(theft_data$make, -theft_data$thefts)
 ```
 
 ![image](https://user-images.githubusercontent.com/91271151/145218595-178543c6-770e-40a2-a361-6a398663fcef.png)
+<a name="plotlycatcont"></a>
+## Plotly: A Mixture of catagorical and continuous
+Now, using facet_grid() we have managed to display an extra variable. We used the grouping variable 'make' as to prevent there being too many levels to our catagories. This would have resulted in an extremely large and unmanagable plot. If we wanted to display the 'state' catagory, we could have created groupings by region with which to group our facets by. 
 
-Now, using facet_wrap() we have managed to display an extra variable. We are relying on their not being too many levels to our catagories as this would result in an extremely large and unmanagable plot. For this reason we have chosen car make instead of state to group our facets by. However, our data frame has three more variables we might be intersting in displaying. We could do this in multiple plots but this might become confusing for our audience. We are going to use the package `plotly` to help us display extra variables and improve our ability to explore data. 
+Although this is an effective plot, our data frame still has three more variables we might be intersting in displaying. We could do this by presenting multiple figures but this might become confusing for our audience. We are going to use the package `plotly` to help us display extra variables and improve our ability to explore data within managable figures. 
 
+We will plot two seperate figures, one with a legned which allows filtering of states and the other for car make. Idealy we could incorporate these two legends into a single plot however, plotly does not support this. 
 ```
 # Load library 
 library(plotly)
@@ -436,4 +441,4 @@ Example of hover-over tooltips which give additional infomation about each data 
 ![image](https://user-images.githubusercontent.com/91271151/145389088-44bf8467-57e5-4496-9738-56c025e60fff.png)
 
 
-In these plots, all 6 of the variables are available to the viewer to find infomation about by hovering over data points. Data can be explored by selecting and deselecting data points. All items in the legend can be selected and deselected by double clickling. 
+In these plots, all 6 of the variables are available to the viewer to find infomation about by hovering over data points. Data can be explored by selecting and deselecting data points and particualr regions can be zoomed in on. All items in the legend can be selected and deselected by double clickling. 

@@ -9,7 +9,9 @@ High dimentional data refers to data frames which contain many variables and or 
 We will also consider the use of interactive plots using the 'plotly' package to suppliment our figures.
 
 ## Learning Objectives:
-- 
+- To understand the dificulties of plotting high dimentional data
+- To be able to plot diferent types of high dimentional data using approaches shown
+- To understand the uses, benefits and limitations of using interactive graphs
 
 First, download the repository locally through this link:
 

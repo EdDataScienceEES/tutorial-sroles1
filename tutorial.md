@@ -5,10 +5,6 @@ date: 2021-12-09 21:00:00
 author: Samuel Roles
 updated: 2021-12-09 21:00:00
 updater: Samuel Roles
-survey_link: https://www.surveymonkey.co.uk/r/HJYGVSF
-redirect_from: 
-  - /2017/03/15/mixed-models.html
-tags: data visualisation 
 ---
 
 
@@ -460,4 +456,46 @@ Example of hover-over tooltips which give additional infomation about each data 
 
 In these plots, all 6 of the variables are available to the viewer to find infomation about by hovering over data points. Data can be explored by selecting and deselecting data points and particualr regions can be zoomed in on. All items in the legend can be selected and deselected by double clickling. 
 
+## Conclusion
+Well done for getting through the tutorial! Here’s a summary of what you have learned:
+- Why multi-dimentional data is hard to plot
+- How to approach the visualisation of multi-dimentional data through the conisderation of its class and stucture
+- How and when to incorporate interactivity into graphs and the usefullness and limitations it has
+
+Feedback on the tutorial is very welcome. If you have any comments or questions related to this tutorial feel free to contact me at s1869354@ed.ac.uk
+
+
+<hr>
+<hr>
+
+#### Check out our <a href="https://ourcodingclub.github.io/links/" target="_blank">Useful links</a> page where you can find loads of guides and cheatsheets.
+
+#### If you have any questions about completing this tutorial, please contact us on ourcodingclub@gmail.com
+
+#### <a href="INSERT_SURVEY_LINK" target="_blank">We would love to hear your feedback on the tutorial, whether you did it in the classroom or online!</a>
+
+<ul class="social-icons">
+	<li>
+		<h3>
+			<a href="https://twitter.com/our_codingclub" target="_blank">&nbsp;Follow our coding adventures on Twitter! <i class="fa fa-twitter"></i></a>
+		</h3>
+	</li>
+</ul>
+
+### &nbsp;&nbsp;Subscribe to our mailing list:
+<div class="container">
+	<div class="block">
+        <!-- subscribe form start -->
+		<div class="form-group">
+			<form action="https://getsimpleform.com/messages?form_api_token=de1ba2f2f947822946fb6e835437ec78" method="post">
+			<div class="form-group">
+				<input type='text' class="form-control" name='Email' placeholder="Email" required/>
+			</div>
+			<div>
+                        	<button class="btn btn-default" type='submit'>Subscribe</button>
+                    	</div>
+                	</form>
+		</div>
+	</div>
+</div>
 

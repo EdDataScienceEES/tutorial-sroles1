@@ -1,3 +1,18 @@
+---
+layout: tutorial 
+title: Visualising Multi-dimensional Data
+date: 2021-12-09 21:00:00
+author: Samuel Roles
+updated: 2021-12-09 21:00:00
+updater: Samuel Roles
+survey_link: https://www.surveymonkey.co.uk/r/HJYGVSF
+redirect_from: 
+  - /2017/03/15/mixed-models.html
+tags: data visualisation 
+---
+
+
+
 # Visualising Multi-dimensional Data
 ## 
 
@@ -14,12 +29,14 @@ High dimentional data refers to data frames which contain many variables and or 
 
 
 ## Learning Objectives:
-- To understand the dificulties of plotting multi-dimentional data
-- To be able to plot diferent types of multi-dimentional data using the approaches shown
+- To be able to name some of the dificulties of plotting multi-dimentional data
+- To be able to plot diferent types of multi-dimentional data using the approaches shown including 'workarounds' to problems associated with diferent plot types
 - To understand the uses, benefits and limitations of using interactive graphs
 - To practice data wrangling and exploration techniques useful when handling multi-dimentional data
 
-First, download the repository locally through this link:
+
+First, download the Github repository locally so that you can access the data sets and starter script required for this tutorial, through this link:https://github.com/EdDataScienceEES/tutorial-sroles1.git. Click on Clone/Download Zip, download the files and unzip them. The script for this tutorial is called X and the data frames 2020_ap_exit_polls_combined_2.xlsx, us_agri.csv and 2015_State_Top10Report_wTotalThefts.xlsx are in the data folder.
+
 
 <a name="catagoricalvariables"></a>
 # Mosaic plots: Multiple catagorical variables 
@@ -442,3 +459,5 @@ Example of hover-over tooltips which give additional infomation about each data 
 
 
 In these plots, all 6 of the variables are available to the viewer to find infomation about by hovering over data points. Data can be explored by selecting and deselecting data points and particualr regions can be zoomed in on. All items in the legend can be selected and deselected by double clickling. 
+
+

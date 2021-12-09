@@ -39,6 +39,11 @@ First, download the Github repository locally so that you can access the data se
 
 Mosaic plots are derived from barcharts and spineplots and are used for displaying multiple catagorical variables. They are formed of a series of tiles whose sizes are proportional to the number of observations in their particular intersection. Mosaic plots lend themselves best to survey data. Survey data can become highly dimentional due with many catagorical columns with many repeating rows (count data) which will influence the size of each tile. 
 
+We will use data from the 2016 US election exit poll to explore and learn how to use mosaic plots.
+
+<img src="https://user-images.githubusercontent.com/91271151/145488662-eb9c6d7b-cc9e-486a-83dd-c0911243260f.gif" div style="text-align:center" alt="drawing" width="600"/>
+
+
 ```
 # clear environment
 rm(list=ls()) 
@@ -286,6 +291,11 @@ However, we must remember that interactivity alone does not make a good graphic.
 
 Parallel coordinate plots can display a large number of continuous variables along the x axis, each with its own vertical axis that has its own scale. Data is then plotted as series of lines which connect across each axis. Groups can be distinguished using colour and then distinct relationships can be seen by patterns in their response to variables. 
 
+We will use agricultural data related to the realtive prices of variables such as labour and land, to explore how parallel coordinate plots can be used to display multiple continuous variables in the same plot. 
+
+<img src="https://user-images.githubusercontent.com/91271151/145490450-62950388-e2da-47aa-aac6-44a2e9980cca.gif" div style="text-align:center" alt="drawing" width="600"/>
+
+
 ```
 # Clear environment
 rm(list=ls()) 
@@ -365,6 +375,11 @@ Example of how mutiple conditions can be set to isolate data:
 # Faceted plots: A Mixture of catagorical and continuous
 
 Facet plots are figures made up of mutiple subpplots based on a catagorical variable. This creates a panel-like plot with each subplot displaying the same variables but with diferent groupings. Facet plots are also useful for dealing with catagorical variables with a large number of levels. This is done by grouping these levels and facetting by these groups.
+
+We will use 2015 US car theft data to explore how facet plots can be used to display a mixture of continuous and catagorical variables in the same plot. 
+
+<img src="https://user-images.githubusercontent.com/91271151/145490958-290f4869-9540-4b8f-a80c-37ac11a1deb2.gif" div style="text-align:center" alt="drawing" width="400"/>
+
 
 ```
 # clear environment
@@ -481,21 +496,3 @@ Feedback on the tutorial is very welcome. If you have any comments or questions 
 		</h3>
 	</li>
 </ul>
-
-### &nbsp;&nbsp;Subscribe to our mailing list:
-<div class="container">
-	<div class="block">
-        <!-- subscribe form start -->
-		<div class="form-group">
-			<form action="https://getsimpleform.com/messages?form_api_token=de1ba2f2f947822946fb6e835437ec78" method="post">
-			<div class="form-group">
-				<input type='text' class="form-control" name='Email' placeholder="Email" required/>
-			</div>
-			<div>
-                        	<button class="btn btn-default" type='submit'>Subscribe</button>
-                    	</div>
-                	</form>
-		</div>
-	</div>
-</div>
-

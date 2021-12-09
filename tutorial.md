@@ -1,8 +1,6 @@
 # Visualising Highly Dimentional Data
 ## 
 
-
-
 High dimentional data refers to data frames which contain many variables and or levels. They are difficult to plot as only so much infomation can exist on a single figure. Here we will walk through several approaches to displaying multiple varibles whilst remaining clear and manageable.
 
 ## Learning Objectives:
@@ -91,7 +89,8 @@ Now we are going to plot our data. This plot will show us infomation on demograp
 library(ggmosaic)
 
 # Reorder demographics into ascending order
-combined$Demographic <- factor(combined$Demographic, levels=c("Under $25,000", "$25,000 - $49,999", "$50,000 - $74,999", "$75,000 - $99,999", "$100,000+"))
+combined$Demographic <- factor(combined$Demographic, levels=c("Under $25,000", "$25,000 - $49,999", "$50,000 - $74,999",
+"$75,000 - $99,999", "$100,000+"))
 
 # Plot mosaic figure showing proportion of demographic to total population in 
 # each state, and how they voted. 
@@ -199,7 +198,8 @@ north_east_data <- subset(combined_region, region == "North East")
 # North East plot 
 (mosaic_plot_ne <-north_east_data %>%
     arrange(Demographic) %>%    
-    mutate(Demographic=factor(Demographic, levels=c("Under $25,000", "$25,000 - $49,999", "$50,000 - $74,999", "$75,000 - $99,999", "$100,000+"))) %>%
+    mutate(Demographic=factor(Demographic, levels=c("Under $25,000", "$25,000 - $49,999", "$50,000 - $74,999",
+    "$75,000 - $99,999", "$100,000+"))) %>%
     ggplot() +
     geom_mosaic(aes(x=product( Demographic, State_Abbr ),
                     fill = voted_for, colour = Demographic, alpha = winner_amongst_group,), offset = 0.05) +
@@ -223,7 +223,8 @@ north_east_data <- subset(combined_region, region == "North East")
 # Deep South plot
 (mosaic_plot_ds <- deep_south_data %>%
     arrange(Demographic) %>%    
-    mutate(Demographic=factor(Demographic, levels=c("Under $25,000", "$25,000 - $49,999", "$50,000 - $74,999", "$75,000 - $99,999", "$100,000+"))) %>% 
+    mutate(Demographic=factor(Demographic, levels=c("Under $25,000", "$25,000 - $49,999", "$50,000 - $74,999",
+    "$75,000 - $99,999", "$100,000+"))) %>% 
     ggplot() +
     geom_mosaic(aes(x=product( Demographic, State_Abbr ),
                     fill = voted_for, colour = Demographic, alpha = winner_amongst_group,), offset = 0.05) +
@@ -429,7 +430,3 @@ Example of hover-over tooltips which give additional infomation about each data 
 
 
 In these plots, all 6 of the variables are available to the viewer to find infomation about by hovering over data points. Data can be explored by selecting and deselecting data points. All items in the legend can be selected and deselected by double clickling. 
-
-
-
-

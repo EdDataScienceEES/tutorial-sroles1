@@ -1,10 +1,15 @@
 # Visualising Highly Dimentional Data
 ## 
 
-High dimentional data refers to data frames which contain many variables and or levels. They are difficult to plot as only so much infomation can exist on a single figure. Here we will walk through several approaches to displaying multiple varibles whilst remaining clear and manageable.
+High dimentional data refers to data frames which contain many variables and or levels. They are difficult to plot as only so much infomation can exist on a single figure whilst maintaining clarity. This tutorial is an introduction to several possible approaches to displaying multiple varibles whilst keeping plots clear and manageable. We break down the tutorial into approaches to display:
+- Multiple catagorical variables
+- Multiple continuous variables
+- A Mixture of catagorical and continuous
+
+We will also consider the use of interactive plots using the 'plotly' package to suppliment our figures.
 
 ## Learning Objectives:
-
+- 
 
 First, download the repository locally through this link:
 
@@ -342,7 +347,7 @@ Example of how mutiple conditions can be set to isolate data
 ![newplot (1)](https://user-images.githubusercontent.com/91271151/145387128-ee7eeae5-27ec-4b17-99e6-b4fad5cd0091.png)
 
 
-# Facet
+# Facetting
 Facetting creates mutiple plots based on a catagorical variable. 
 
 First clear the R environment. Then load in the libraries, the car thefts data frame and explore it's columns and their levels. 

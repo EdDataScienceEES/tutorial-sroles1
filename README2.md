@@ -1,0 +1,14 @@
+# Visualising Multi-dimensional Data
+Coding Club tutorial by Samuel Roles
+contact at s1869354@ed.ac.uk
+last updated: 09/12/2021
+
+## Description
+This is the repository for the visualising Multi-dimensional Data tutorial. Find the tutorial <a href="https://github.com/EdDataScienceEES/tutorial-sroles1/blob/edc948f007732ee765a3ff96dfea064b245734a7/tutorial.md" target="_blank">here</a>.
+### Tutorial learning objectives: 
+- To be able to name some of the dificulties of plotting multi-dimentional data
+- To be able to plot diferent types of multi-dimentional data using the approaches shown including 'workarounds' to problems associated with diferent plot types
+- To understand the uses, benefits and limitations of using interactive graphs
+- To practice data wrangling and exploration techniques useful when handling multi-dimentional data
+## Requirements
+- Software: R Studio 

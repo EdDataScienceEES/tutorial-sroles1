@@ -1,83 +1,14 @@
 # Visualising Highly Dimentional Data
 ## 
 
+
+
 High dimentional data refers to data frames which contain many variables and or levels. They are difficult to plot as only so much infomation can exist on a single figure. Here we will walk through several approaches to displaying multiple varibles whilst remaining clear and manageable.
 
 ## Learning Objectives:
 
 
 First, download the repository locally through this link:
-
-# Parallel Coordinate Plots
-
-Parallel coordinates for multidimensional exploratory data analysis.
-
-```
-# Clear environment
-rm(list=ls()) 
-
-# Load libraries
-library(GGally)
-
-# Read in agricultural data
-agri_data<- read.csv("data/us_agri.csv")
-
-# Investigate data frame structure
-str(agri_data)
-```
-We can see that we have 4 continuous variables and a catagorical variable which groups the rows into size of farm. Now we are going to plot parallel coordinates plot to display all of the varibles.
-```
-# Plot parallel coordinates plot
-(parcoord_plot <- ggparcoord(agri_data,
-           columns = 1:4, groupColumn = 5, # Variable columns on x axis and which to group lines by
-           scale = "center", # Standardise and center variables
-           title = "Relative Price Per Unit Variable by Farm", # Title
-           alphaLines = 0.6)) # Opacity of lines
-```
-
-![image](https://user-images.githubusercontent.com/91271151/145380394-525b9c40-0414-43ce-bb67-9099686174c3.png)
-
-
-This plot is not useful for extracting specific values but is for viewing overall trends in the data. A question which may be posed by looking at this graph is why do small farms own land which is valued higher than larger farms? 
-However, this style of plot can become confusing and unclear when more rows of data are added. With plotly we can plot the same style of graph but allow for viewer interaction to make the trends and clear isolate parameters of interest. 
-
-Plotly parellel coordinate plots are not perfect however. They struggle with customisation of labels, legends and catagorical data. We have implemented two 'work-arounds' in this code to overcome some of these problems. The first requires us to assign each level of the 'size' catagory a numerical value.
-```
-# Load libraries
-library(plotly)
-library(tidyverse)
-
-# Add column giving 'size' numerical values for parcoords plot
-agri_data$size_plotly <- ifelse(agri_data$size == "Large", 1,
-                              ifelse(agri_data$size == "Small", 0, 0.5))
-
-```
-
-We will now plot the parallel coordinate graph. The numerical size column is a work-around to assign each level a colour. It also allows us to add a make-shift legend and seperate the levels. We add size as an extra variable and use our assinged numerical values to distinguish them. We will use the label of this column to distingush each level.
-```
-# Plot  a plotly parallel coordinate plot
-plotly_parcoord <- agri_data %>%
-  plot_ly(type = 'parcoords', line = list(color = ~size_plotly, # Distinguish sizes into three colours
-                                          colorscale = list(c(0,'blue'),c(0.5,'green'),c(1,'red'))),
-                                dimensions = list( # Define the scale ranges of each variable  
-                        list(range = c(0,1.5),
-                             label = '          Size: Large \r\n       
-                    Medium \r\n
-                 Small', values = ~size_plotly), # A make-shift legend         
-                        list(range = c(0,4),
-                             label = 'capital', values = ~p.capital),
-                        list(range = c(0,4),
-                             constraintrange = c(0,4),
-                             label = 'land', values = ~p.land),
-                        list(range = c(0,4),
-                             label = 'labor', values = ~p.labor),
-                        list(range = c(0,4),
-                             label = 'crop', values = ~p.crop))
-          )
-
-plotly_parcoord # Call plot
-```
-
 
 ### Mosaic Plots
 
@@ -319,6 +250,97 @@ grid.arrange(mosaic_plot_ds, mosaic_plot_ne, ncol=2, bottom = "States")
 
 We now have a plot which clearly displays 5 catagorical variables. Ideally this would contain a figure caption, perhaps giving the full names of each state instead of just the abbreviations. We could do this when knitting into a PDF for example using fig.cap = "". 
 
+
+### Plotly
+
+Plotly is a package which acts as an interface to the plotly javascript graphing library. It wraps javascript for multiple coding languages including R, Python and Matlab. It produces amazing interactive and animated graphics of browser/ html based charts and visualisations with little code. Although plotly is relively simple to use, it is made even simplier by being able to improve existing ggplot code using ggplotly().
+
+Interactive visuals can have a particular use in displaying high density or high dimentional data. Interactive visualisations are beocming increasingly popular. This is especially within popular web based news media. 
+
+Static vs. interactive: 
+       - Static useful for reports useful for displaying what you the creator has highlighted 
+       - User can update an interactive graphic e.g. drill down to specific data points using hover info or focusing on subsets of data by selecting or deselecting groups 
+       - Simple interaction improve ability of data exploration
+
+However, we must remember that interactivity alone does not make a good graphic. We must always refer to the best practices of data visualisation and design principles.
+
+# Parallel Coordinate Plots
+
+Parallel coordinates for multidimensional exploratory data analysis.
+
+```
+# Clear environment
+rm(list=ls()) 
+
+# Load libraries
+library(GGally)
+
+# Read in agricultural data
+agri_data<- read.csv("data/us_agri.csv")
+
+# Investigate data frame structure
+str(agri_data)
+```
+We can see that we have 4 continuous variables and a catagorical variable which groups the rows into size of farm. Now we are going to plot parallel coordinates plot to display all of the varibles.
+```
+# Plot parallel coordinates plot
+(parcoord_plot <- ggparcoord(agri_data,
+           columns = 1:4, groupColumn = 5, # Variable columns on x axis and which to group lines by
+           scale = "center", # Standardise and center variables
+           title = "Relative Price Per Unit Variable by Farm", # Title
+           alphaLines = 0.6)) # Opacity of lines
+```
+
+![image](https://user-images.githubusercontent.com/91271151/145380394-525b9c40-0414-43ce-bb67-9099686174c3.png)
+
+
+This plot is not useful for extracting specific values but is for viewing overall trends in the data. A question which may be posed by looking at this graph is why do small farms own land which is valued higher than larger farms? 
+However, this style of plot can become confusing and unclear when more rows of data are added. With plotly we can plot the same style of graph but allow for viewer interaction to make the trends and clear isolate parameters of interest. 
+
+Plotly parellel coordinate plots are not perfect however. They struggle with customisation of labels, legends and catagorical data. We have implemented two 'work-arounds' in this code to overcome some of these problems. The first requires us to assign each level of the 'size' catagory a numerical value.
+```
+# Load libraries
+library(plotly)
+library(tidyverse)
+
+# Add column giving 'size' numerical values for parcoords plot
+agri_data$size_plotly <- ifelse(agri_data$size == "Large", 1,
+                              ifelse(agri_data$size == "Small", 0, 0.5))
+
+```
+
+We will now plot the parallel coordinate graph. The numerical size column is a work-around to assign each level a colour. It also allows us to add a make-shift legend and seperate the levels. We add size as an extra variable and use our assinged numerical values to distinguish them. We will use the label of this column to distingush each level.
+```
+# Plot  a plotly parallel coordinate plot
+plotly_parcoord <- agri_data %>%
+  plot_ly(type = 'parcoords', line = list(color = ~size_plotly, # Distinguish sizes into three colours
+                                          colorscale = list(c(0,'blue'),c(0.5,'green'),c(1,'red'))),
+                                dimensions = list( # Define the scale ranges of each variable  
+                        list(range = c(0,1.5),
+                             label = '          Size: Large \r\n       
+                    Medium \r\n
+                 Small', values = ~size_plotly), # A make-shift legend         
+                        list(range = c(0,4),
+                             label = 'capital', values = ~p.capital),
+                        list(range = c(0,4),
+                             constraintrange = c(0,4),
+                             label = 'land', values = ~p.land),
+                        list(range = c(0,4),
+                             label = 'labor', values = ~p.labor),
+                        list(range = c(0,4),
+                             label = 'crop', values = ~p.crop))
+          )
+
+plotly_parcoord # Call plot
+```
+Output:
+![newplot (2)](https://user-images.githubusercontent.com/91271151/145387122-654df405-a76c-47d8-bfa0-0d3d48d02660.png)
+Example of how each level can be filtered
+![newplot](https://user-images.githubusercontent.com/91271151/145386946-0f712f81-6a5f-4ed1-8292-518f08dcc056.png)
+Example of how mutiple conditions can be set to isolate data
+![newplot (1)](https://user-images.githubusercontent.com/91271151/145387128-ee7eeae5-27ec-4b17-99e6-b4fad5cd0091.png)
+
+
 # Facet
 Facetting creates mutiple plots based on a catagorical variable. 
 
@@ -372,20 +394,7 @@ theft_data$make <- reorder(theft_data$make, -theft_data$thefts)
 
 ![image](https://user-images.githubusercontent.com/91271151/145218595-178543c6-770e-40a2-a361-6a398663fcef.png)
 
-Now, using facet_wrap() we have managed to display an extra variable. However, our data frame has three more variables we might be intersting in displaying. We could do this in multiple plots but this might become confusing for our audience. We are going to use the package `plotly` to help us display extra variables and improve our ability to explore data. 
-
-### Plotly
-
-Plotly is a package which acts as an interface to the plotly javascript graphing library. It wraps javascript for multiple coding languages including R, Python and Matlab. It produces amazing interactive and animated graphics of browser/ html based charts and visualisations with little code. Although plotly is relively simple to use, it is made even simplier by being able to improve existing ggplot code using ggplotly().
-
-Interactive visuals can have a particular use in displaying high density or high dimentional data. Interactive visualisations are beocming increasingly popular. This is especially within popular web based news media. 
-
-Static vs. interactive: 
-       - Static useful for reports useful for displaying what you the creator has highlighted 
-       - User can update an interactive graphic e.g. drill down to specific data points using hover info or focusing on subsets of data by selecting or deselecting groups 
-       - Simple interaction improve ability of data exploration
-
-However, we must remember that interactivity alone does not make a good graphic. We must always refer to the best practices of data visualisation and design principles.
+Now, using facet_wrap() we have managed to display an extra variable. We are relying on their not being too many levels to our catagories as this would result in an extremely large and unmanagable plot. For this reason we have chosen car make instead of state to group our facets by. However, our data frame has three more variables we might be intersting in displaying. We could do this in multiple plots but this might become confusing for our audience. We are going to use the package `plotly` to help us display extra variables and improve our ability to explore data. 
 
 ```
 # Load library 
@@ -411,6 +420,13 @@ ggplotly(make_plot)
 # Convert to ggplotly
 ggplotly(state_plot)
 ```
+Output of the state filtered plot:
+![newplot (3)](https://user-images.githubusercontent.com/91271151/145388200-feb69d01-dd89-43ff-a3ff-93b1dcc1f403.png)
+Output of the make filtered plot showing how groups can be isolated.
+![newplot (4)](https://user-images.githubusercontent.com/91271151/145388461-31ec79db-0143-4980-a58f-659567de7ea5.png)
+Example of hover-over tooltips which give additional infomation about each data point.
+![image](https://user-images.githubusercontent.com/91271151/145389088-44bf8467-57e5-4496-9738-56c025e60fff.png)
+
 
 In these plots, all 6 of the variables are available to the viewer to find infomation about by hovering over data points. Data can be explored by selecting and deselecting data points. All items in the legend can be selected and deselected by double clickling. 
 

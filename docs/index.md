@@ -319,6 +319,8 @@ Interactive visualisations are beocming increasingly popular especially within p
 
 However, we must remember that interactivity alone does not make a good graphic. We must always refer to the best practices of data visualisation and design principles and know that static plots are better suited to certain scenarios. For example static plots are best for reports which emphasise what you the creator has highlighted.
 
+In the next two plotting approaches will with use plotly to show an alternative method of visualisation. 
+
 <a name="continvar"></a>
 # Parallel coordinate plots: Multiple continuous variable
 
@@ -345,18 +347,18 @@ We can see that we have 4 continuous variables and a catagorical variable which 
 ```
 # Plot parallel coordinates plot
 (parcoord_plot <- ggparcoord(agri_data,
-           columns = 1:4, groupColumn = 5, # Variable columns on x axis
-	   # and which to group lines by
-           scale = "center", # Standardise and center variables
-           title = "Relative Price Per Unit Variable by Farm", # Title
-           alphaLines = 0.6)) + # Opacity of lines
-	   theme_bw()) # Opacity of lines
+                      columns = 1:4, groupColumn = 5, # Variable columns on x axis
+                       # and which to group lines by
+                       scale = "center", # Standardise and center variables
+                       title = "Relative Price Per Unit Variable by Farm", # Title
+                       alphaLines = 0.6) + # Opacity of lines 
+    theme_bw())
 ```
 
 ![image](https://user-images.githubusercontent.com/91271151/145504306-b1fac0f1-b45e-4c15-85d1-39d8c4c6564d.png)
 
 
-This plot is not useful for extracting specific values but is effective for viewing overall trends in the data. A question which may be posed by looking at this graph is why do small farms generally own land which is valued higher than larger farms? We used the colours red, green and blue to seperate each catagory, an improvement to this graph would be to consider a colour blind friendly colour palet. This style of plot can become confusing and unclear when more rows of data are added. 
+This plot is not useful for extracting specific values but is effective for viewing overall trends in the data. A question which may be posed by looking at this graph is why do small farms generally own land which is valued higher than larger farms? We used the colours red, green and blue to seperate each catagory, an improvement to this graph would be to consider a colour blind friendly colour palet. It is also good to remember that this style of plot can become confusing and unclear when more rows of data are added. 
 
 <a name="plotlyconvar"></a>
 ## Plotly: Multiple continuous variables
@@ -369,11 +371,12 @@ library(tidyverse)
 
 # Add column giving 'size' numerical values for parcoords plot
 agri_data$size_plotly <- ifelse(agri_data$size == "Large", 1,
-                             ifelse(agri_data$size == "Small", 0, 0.5))
+                                ifelse(agri_data$size == "Small", 0, 0.5))
 
+head(agri_data) # See the new column we have added 
 ```
 
-We will now plot the parallel coordinate graph. The numerical size column is a work-around to assign each level a colour and allows us to add a make-shift legend to seperate the levels. To do this we add size as an extra variable and use our assinged numerical values to distinguish each level. We will use the label of this column as a make-shift legend.
+We will now plot the parallel coordinate graph. The numerical 'plotly_size' column is a work-around to assign each level a colour and allows us to add a make-shift legend to seperate the levels. To do this we add size as an extra variable and use our assinged numerical values to distinguish each level. We will use the label of this column as a make-shift legend.
 
 ```
 # Plot  a plotly parallel coordinate plot
@@ -435,7 +438,7 @@ ulst <- lapply(theft_data, unique)
 ulst
 ```
 
-We can see that the make_and_model column is has 48 levels and provides us with two bits of infomation which could be displayed clearer and lends itself to a grouping varible. So, we seperate the columns into make and model, make being the variable we will use to group. 
+We can see that the make_and_model column is has 48 levels and provides us with two bits of infomation which could be displayed clearer and lends itself to a grouping varible. So, we seperate the columns into 'make' and 'model', 'make' being the variable we will use to group. 
 
 ```
 # Create new data frame with make and model extracted and seperated
@@ -454,10 +457,10 @@ Now we are going to plot our data. Our plot will display infomation about the ma
 # facet plot
 theft_data$model <- reorder(theft_data$model, theft_data$thefts)
 theft_data$make <- reorder(theft_data$make, -theft_data$thefts)
-# plot 
 
+# plot 
 (theft_facet <- ggplot(theft_data, aes(x = thefts, y = model,
-colour = make )) + 
+                                       colour = make )) + 
     geom_point() +
     ggtitle("2015 US Car Thefts") + 
     scale_x_continuous(trans = "log10", name = "Number of Thefts") +
@@ -465,15 +468,37 @@ colour = make )) +
     facet_grid(make ~ ., scales = "free", space = "free") +
     theme_light() + theme(text=element_text(size=7, angle=12),
                           strip.text.y = element_text(angle = 0,
-			  size = 8),
-                          legend.position="none",
-			  title = element_text(angle = 0, size =10), 
+                                                      size = 8),
+                          legend.position="right",
+                          title = element_text(angle = 0, size =10), 
                           plot.title = element_text(hjust = 0.5))
 ) 
+
+
 ```
 
 ![image](https://user-images.githubusercontent.com/91271151/145218595-178543c6-770e-40a2-a361-6a398663fcef.png)
 <a name="plotlycatcont"></a>
+This plot is good for distinguishing the patterns between each make due to the colour seperation. However, we could display a fourth variable here for example the year of the car using the colour instead. 
+```
+# plot with year as colour
+(theft_facet_2 <- ggplot(theft_data, aes(x = thefts, y = model,
+                                       colour = year )) + 
+    geom_point() +
+    ggtitle("2015 US Car Thefts") + 
+    scale_x_continuous(trans = "log10", name = "Number of Thefts") +
+    scale_y_discrete(name = "Model") +
+    facet_grid(make ~ ., scales = "free", space = "free") +
+    theme_light() + theme(text=element_text(size=7, angle=12),
+                          strip.text.y = element_text(angle = 0,
+                                                      size = 8),
+                          legend.position="right",
+                          title = element_text(angle = 0, size =10), 
+                          plot.title = element_text(hjust = 0.5))
+) 
+```
+![image](https://user-images.githubusercontent.com/91271151/145563655-ad67aa1b-7136-4980-bc49-ac24390b7277.png)
+
 ## Plotly: A Mixture of catagorical and continuous
 Now, using facet_grid() we have managed to display an extra variable. We used the grouping variable 'make' as to prevent there being too many levels to our catagories. This would have resulted in an extremely large and unmanagable plot. If we wanted to display the 'state' catagory, we could have created groupings by region with which to group our facets by. 
 

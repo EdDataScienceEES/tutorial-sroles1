@@ -499,12 +499,13 @@ This plot is good for distinguishing the patterns between each make due to the c
 ```
 ![image](https://user-images.githubusercontent.com/91271151/145563655-ad67aa1b-7136-4980-bc49-ac24390b7277.png)
 
-## Plotly: A Mixture of catagorical and continuous
 Now, using facet_grid() we have managed to display an extra variable. We used the grouping variable 'make' as to prevent there being too many levels to our catagories. This would have resulted in an extremely large and unmanagable plot. If we wanted to display the 'state' catagory, we could have created groupings by region with which to group our facets by. 
 
-Although this is an effective plot, our data frame still has three more variables we might be intersting in displaying. We could do this by presenting multiple figures but this might become confusing for our audience. We are going to use the package `plotly` to help us display extra variables and improve our ability to explore data within managable figures. 
+## Plotly: A Mixture of catagorical and continuous
 
-We will plot two seperate figures, one with a legned which allows filtering of states and the other for car make. Idealy we could incorporate these two legends into a single plot however, plotly does not support this. 
+Although this is an effective plot, our data frame still has two more variables we might be intersting in displaying. We could do this by presenting multiple figures but this might become confusing for our audience. We are going to use the package `plotly` to help us display extra variables and improve our ability to explore data within managable figures. 
+
+We will plot two seperate figures, one with a legend which allows filtering of states and the other with a legend which allows to filter for car make. Ideally we could incorporate these two legends into a single plot however, plotly does not support this. 
 ```
 # Load library 
 library(plotly)
@@ -540,10 +541,10 @@ Example of hover-over tooltips which give additional infomation about each data 
 In these plots, all 6 of the variables are available to the viewer to find infomation about by hovering over data points. Data can be explored by selecting and deselecting data points and particualr regions can be zoomed in on. All items in the legend can be selected and deselected by double clickling. 
 
 ## Conclusion
-Well done for getting through the tutorial! Here’s a summary of what you have learned:
-- Why multi-dimentional data is hard to plot
+Well done for getting through the tutorial! I hope this tutorial has been a good introduction into the many approaches for visualising multi-dimentional data. Here’s a summary of what you have learned:
+- The associated complications of dealing with multi-dimentional data
 - How to approach the visualisation of multi-dimentional data through the conisderation of its class and stucture
-- How and when to incorporate interactivity into graphs and the usefullness and limitations it has
+- How and when to incorporate interactivity into graphs and the its usefullness and limitations
 
 Feedback on the tutorial is very welcome. If you have any comments or questions related to this tutorial feel free to contact me at s1869354@ed.ac.uk
 

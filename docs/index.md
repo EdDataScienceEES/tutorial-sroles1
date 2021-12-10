@@ -312,7 +312,6 @@ We will use agricultural data related to the realtive prices of variables such a
 
 <img src="https://user-images.githubusercontent.com/91271151/145490450-62950388-e2da-47aa-aac6-44a2e9980cca.gif" div style="text-align:center" alt="drawing" width="400"/>
 
-
 ```
 # Clear environment
 rm(list=ls()) 
@@ -334,10 +333,11 @@ We can see that we have 4 continuous variables and a catagorical variable which 
 	   # and which to group lines by
            scale = "center", # Standardise and center variables
            title = "Relative Price Per Unit Variable by Farm", # Title
-           alphaLines = 0.6)) # Opacity of lines
+           alphaLines = 0.6)) + # Opacity of lines
+	   theme_bw()) # Opacity of lines
 ```
 
-![image](https://user-images.githubusercontent.com/91271151/145380394-525b9c40-0414-43ce-bb67-9099686174c3.png)
+![image](https://user-images.githubusercontent.com/91271151/145504306-b1fac0f1-b45e-4c15-85d1-39d8c4c6564d.png)
 
 
 This plot is not useful for extracting specific values but is effective for viewing overall trends in the data. A question which may be posed by looking at this graph is why do small farms generally own land which is valued higher than larger farms? We used the colours red, green and blue to seperate each catagory, an improvement to this graph would be to consider a colour blind friendly colour palet. This style of plot can become confusing and unclear when more rows of data are added. 

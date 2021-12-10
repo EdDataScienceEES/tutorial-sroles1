@@ -27,7 +27,7 @@ Multi-dimentional data refers to data frames which contain many variables and or
 
 
 
-First, __download the Github repository locally__ so that you can access the data sets and starter script required for this tutorial <a href="https://github.com/EdDataScienceEES/tutorial-sroles1.git" target="_blank">__here__</a>. Click on Clone/Download Zip, download the files and unzip them. The script for this tutorial is called X and the data frames 2020_ap_exit_polls_combined_2.xlsx, us_agri.csv and 2015_State_Top10Report_wTotalThefts.xlsx are in the data folder.
+First, __download the Github repository locally__ so that you can access the data sets and starter scripts as required for this tutorial <a href="https://github.com/EdDataScienceEES/tutorial-sroles1.git" target="_blank">__here__</a>. Click on Clone/Download Zip, download the files and unzip them. The script for this tutorial is called starter_script.R in the scripts folder and the data frames 2020_ap_exit_polls_combined_2.xlsx, us_agri.csv and 2015_State_Top10Report_wTotalThefts.xlsx are in the data folder. Use starter_script_complete.R if you want to follow along without entering the code yourself. 
 
 
 <a name="catagoricalvariables"></a>
@@ -498,6 +498,8 @@ This plot is good for distinguishing the patterns between each make due to the c
 ) 
 ```
 ![image](https://user-images.githubusercontent.com/91271151/145563655-ad67aa1b-7136-4980-bc49-ac24390b7277.png)
+
+This plot is now quite hard to read. Try playing around with the text sizes and its configuration to improve it.
 
 Now, using facet_grid() we have managed to display an extra variable. We used the grouping variable 'make' as to prevent there being too many levels to our catagories. This would have resulted in an extremely large and unmanagable plot. If we wanted to display the 'state' catagory, we could have created groupings by region with which to group our facets by. 
 

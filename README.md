@@ -4,7 +4,7 @@ contact at s1869354@ed.ac.uk
 last updated: 09/12/2021
 
 ## Description
-This is the repository for the visualising Multi-dimensional Data tutorial. Find the tutorial <a href="https://eddatascienceees.github.io/tutorial-sroles1/d" target="_blank">here</a>.
+This is the repository for the visualising Multi-dimensional Data tutorial. Find the tutorial <a href="https://eddatascienceees.github.io/tutorial-sroles1/" target="_blank">here</a>.
 ### Tutorial learning objectives: 
 - To be able to name some of the dificulties of plotting multi-dimentional data
 - To be able to plot diferent types of multi-dimentional data using the approaches shown including 'workarounds' to problems associated with diferent plot types

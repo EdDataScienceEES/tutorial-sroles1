@@ -478,7 +478,6 @@ theft_data$make <- reorder(theft_data$make, -theft_data$thefts)
 ```
 
 ![image](https://user-images.githubusercontent.com/91271151/145218595-178543c6-770e-40a2-a361-6a398663fcef.png)
-<a name="plotlycatcont"></a>
 This plot is good for distinguishing the patterns between each make due to the colour seperation. However, we could display a fourth variable here for example the year of the car using the colour instead. 
 ```
 # plot with year as colour
@@ -502,7 +501,7 @@ This plot is good for distinguishing the patterns between each make due to the c
 This plot is now quite hard to read. Try playing around with the text sizes and its configuration to improve it.
 
 Now, using facet_grid() we have managed to display an extra variable. We used the grouping variable 'make' as to prevent there being too many levels to our catagories. This would have resulted in an extremely large and unmanagable plot. If we wanted to display the 'state' catagory, we could have created groupings by region with which to group our facets by. 
-
+<a name="plotlycatcont"></a>
 ## Plotly: A Mixture of catagorical and continuous
 
 Although this is an effective plot, our data frame still has two more variables we might be intersting in displaying. We could do this by presenting multiple figures but this might become confusing for our audience. We are going to use the package `plotly` to help us display extra variables and improve our ability to explore data within managable figures. 

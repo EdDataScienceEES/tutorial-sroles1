@@ -55,26 +55,28 @@ exit_poll <- read_excel("data/2020_ap_exit_polls_combined_2.xlsx")
 ulist <- lapply(exit_poll, unique) 
 ulist
 ```
-This data set contains 28 demographics and 50 states Mosaic plots work well for displaying multiple catagorical variables but can't handle this many levels and remain clear. In this example we will choose our demogrpahic to focus on to be wage-brackets and will choose the four states with the most electoral power. 
+This data set contains 28 demographics and 50 states. Mosaic plots work well for displaying multiple catagorical variables but can't handle this many levels and remain clear. This means we need to narrow down on what we want to display. In this example we will choose our demogrpahic to focus on to be wage-brackets and will choose the four states with the most electoral power. 
 
 ```
 # Filter data set for only wage-bracket demographics
 filt <- exit_poll %>% filter(Demographic == "Under $25,000"  |
-                          Demographic == "$25,000 - $49,999" |
-                          Demographic == "$50,000 - $74,999" |
-                          Demographic == "$100,000+")
+                               Demographic == "$25,000 - $49,999" |
+                               Demographic == "$50,000 - $74,999" |
+                               Demographic == "$100,000+")
 
 # Find out which states have most electoral power
 state_value <- unique(exit_poll[c( "Electoral_Votes_Available",
-"State_Abbr")])
+                                   "State_Abbr")])
 state_value <- state_value[order(state_value$Electoral_Votes_Available,
-decreasing = TRUE), ]
+                                 decreasing = TRUE), ]
+
+state_value # Print states in order of the most electoral power
 
 # Filter data set for top four states
 filt <- filt %>% filter(State_Abbr == "CA" |
-                             State_Abbr == "TX" |
-                            State_Abbr == "FL" |
-                           State_Abbr == "NY")
+                          State_Abbr == "TX" |
+                          State_Abbr == "FL" |
+                          State_Abbr == "NY")
 ```
 Our data frame originates from an exit poll survey taken nationwide. However, some 'wrangling' has already occured and what we are presented with is a summary data frame. Mosaic plots are best for displaying the raw data. If we had collected with data ourselves, using a mosaic plot would summarise our data for us without the need for the extra wrangling which has already occured. We will take a backwards step to return the data to a form representative of its raw form to allow the mosaic plot to deal with the count data it is best with. 
 
@@ -96,8 +98,8 @@ expanded_biden <- expandRows(expanded_biden, "proportion")
 expanded_trump <- expandRows(expanded_trump, "proportion")
 
 # Add new column name to distinguish Trump voters from Biden voters
-expanded2$voted_for <- "Trump"
-expanded$voted_for <- "Biden"
+expanded_trump$voted_for <- "Trump"
+expanded_biden$voted_for <- "Biden"
 
 # Remove names of column which has been deleted from the other data set
 # in order to make them match, ready to combine
@@ -106,9 +108,13 @@ expanded_trump <- expanded_trump %>% select(-"Biden_%")
 
 # Combine the two data sets 
 combined <- rbind(expanded_biden,expanded_trump)
+
+glimpse(combined) # See how the structure and size of our data has
+# changed
 ```
 
 Now we are going to plot our data. This plot will show us what proportion of each demographic voted for Trump and Biden, the proportion each wage demographic makes up of the whole population, and how these varies by state. 
+
 ```
 # Library 
 library(ggmosaic)
@@ -138,20 +144,21 @@ levels=c("Under $25,000", "$25,000 - $49,999", "$50,000 - $74,999",
 
 ![image](https://user-images.githubusercontent.com/91271151/144756569-1479db89-9eab-4a71-88fa-0900aa2c5a9c.png)
 
-This plot is clear, informative and well labled. However, there is limitations to gg_mosaic. Mosaic plots idealy are able to show more catagorical variables than is displayed here. For example, by the use of transparency to distinguish between another variable. However when using this in gg_mosaic it causes complications. Try showing who was the overall winner in each group using the alpha argument in the geom_mosaic aesthetic. 
+This plot is clear, informative and well labled. However, there is limitations to gg_mosaic. Mosaic plots idealy are able to show more catagorical variables than is displayed here. For example, by the use of ospacity to distinguish between another variable. However when using this in gg_mosaic it causes complications. Try showing who was the overall winner in each group using the alpha argument in the geom_mosaic aesthetic. 
 
 ```
 # Plot mosaic figure
 (mosaic_plot_alpha <- ggplot(data = combined) +
     geom_mosaic(aes(x=product( Demographic, State_Abbr ),
-                    fill = voted_for, colour = Demographic, alpha = Winner,),
-		    offset = 0.05) + # Alpha argument included 
+                    fill = voted_for, colour = Demographic,
+                    alpha = winner_amongst_group,),
+                offset = 0.05) + # Alpha argument included 
     scale_alpha_manual(values =c(.5,1)) +
     theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = .5)) + 
     labs(y="Income Demographic", x="Voted for: State",
-    title = "Exit Poll") +
+         title = "Exit Poll") +
     scale_fill_manual(values = c("Trump" = "firebrick3",
-    "Biden" = "deepskyblue3"))+
+                                 "Biden" = "deepskyblue3"))+
     theme_bw() + theme(panel.border = element_blank(),
                        panel.grid.minor = element_blank(), 
                        plot.title = element_text(hjust = 0.5),
@@ -160,36 +167,38 @@ This plot is clear, informative and well labled. However, there is limitations t
 ```
 ![image](https://user-images.githubusercontent.com/91271151/144756533-49af96f8-e0f5-4635-8a9f-07d6ef38b6d8.png)
 
-We now have a plot which displays four catagorical variables. However, a complication with gg_mosaic is that it is very hard to alter axis labels. This is due to the fact that although we know that variables are essentially discrete, in gg_mosaic they are continuous as this is how the proportionate sizes of boxes based on the count data are generated. This means it is not possible to customise axis, in an intuitive way. This has made our axis a little complex and comprimised the clarity of out plot, as is seen on the x-axis where there are redundant labels. In the next plot we will show one approach to tackling this problem.
+We now have a plot which displays four catagorical variables. However, a complication with gg_mosaic is that it is very hard to alter axis labels. This is due to the fact that although we know that variables are essentially discrete, in gg_mosaic they are continuous as this is how the proportionate sizes of boxes based on the count data are generated. This means it is not possible to customise axis, in an intuitive way. This has made our axis a little complex and comprimised the clarity of out plot, as is seen on the x-axis where there are redundant labels. Our data would be better suited to a mosaic plot if the fourth variable had count data in each level. Here, in the states where trump or biden didnt win, the labels have nothing to address. In the next plot we will show one approach to tackling this problem.
 
-If we wanted we could take this plot a step further and display a fifth categorical variable- region. We want to use a <a href="#mixedvar">faceted</a> approach but cannot use facet_grid() or facet_wrap() because in this case we want our x-axis to be diferent according to which states are found in a region. If we had equivilent data for the 2016 exit poll we could use facet_wrap() by year as the same x axis would be required. We will instead use a 'work-around' which creates two seperate plots based on region and combines them using grid.arrange(). We will repeat the previous code and add in another varible (region) to display. You will have to remove several aspects of the graphs in order to combine them cleanly. We have also improved the clarity of the x-axis labels, see if you can spot the way we got around the dificulites with changing axis labels in gg_mosaic.
+If we wanted we could take this plot a step further and display a fifth categorical variable- 'region'. We want to use a <a href="#mixedvar">faceted</a> approach but cannot use facet_grid() or facet_wrap() because in this case we want our x-axis to be diferent according to which states are found in a region. If we had equivilent data for the 2016 exit poll we could use facet_wrap() by year as the same x axis would be required. We will instead use a 'work-around' which creates two seperate plots based on region and combines them using grid.arrange(). We will repeat the previous code and add in another varible (region) to display. You will have to remove several aspects of the graphs in order to combine them cleanly. We have also improved the clarity of the x-axis labels. See if you can spot the way we got around the dificulites with changing axis labels in gg_mosaic.
+
 ```
-
 # Repetition of the previous section but to allow for facetting
 # according to region.
 
+# Library
+library(gridExtra)
 
 # Filter data set for only wage-bracket demographics
 region_data <- exit_poll %>% filter(Demographic == "Under $25,000"  |
-                               Demographic == "$25,000 - $49,999" |
-                               Demographic == "$50,000 - $74,999" |
-                               Demographic == "$75,000 - $99,999" | 
-                               Demographic == "$100,000+")
+                                      Demographic == "$25,000 - $49,999" |
+                                      Demographic == "$50,000 - $74,999" |
+                                      Demographic == "$75,000 - $99,999" | 
+                                      Demographic == "$100,000+")
 
 
 # Filter deep south states
 deep_south <- region_data %>% filter(State == "south-carolina" |
-                                     State == "mississippi" |
-                                     State == "florida" |
-                                     State == "texas" |
-                                     State == "alabama" )
+                                       State == "mississippi" |
+                                       State == "florida" |
+                                       State == "texas" |
+                                       State == "alabama" )
 
 # Filter north east states 
 north_east <- region_data %>% filter(State == "connecticut" |
-                                     State == "new-hampshire" |
-                                     State == "new-jersey" |
-                                     State == "new-york" |
-                                     State == "pennsylvania")
+                                       State == "new-hampshire" |
+                                       State == "new-jersey" |
+                                       State == "new-york" |
+                                       State == "pennsylvania")
 
 
 # Add region column 
@@ -232,19 +241,21 @@ north_east_data <- subset(combined_region, region == "North East")
 (mosaic_plot_ne <-north_east_data %>%
     arrange(Demographic) %>%    
     mutate(Demographic=factor(Demographic, levels=c("Under $25,000",
-    "$25,000 - $49,999", "$50,000 - $74,999", "$75,000 - $99,999",
-    "$100,000+"))) %>%
+                                                    "$25,000 - $49,999",
+						    "$50,000 - $74,999",
+						    "$75,000 - $99,999",
+                                                    "$100,000+"))) %>%
     ggplot() +
     geom_mosaic(aes(x=product( Demographic, State_Abbr ),
                     fill = voted_for, colour = Demographic,
-		    alpha = winner_amongst_group,), offset = 0.05) +
+                    alpha = winner_amongst_group,), offset = 0.05) +
     scale_alpha_manual(values =c(.5,1)) +
     theme(axis.text.x = element_text(angle = 90, hjust = 1,
-    vjust = .5)) + 
+                                     vjust = .5)) + 
     labs(x="CT        NH       NJ       NY       PA"      ,
-    title = "North East") +
+         title = "North East") +
     scale_fill_manual(values = c("Trump" = "firebrick3",
-    "Biden" = "deepskyblue3")) +
+                                 "Biden" = "deepskyblue3")) +
     theme_bw() + theme(panel.border = element_blank(),
                        panel.grid.minor = element_blank(),
                        panel.grid.major = element_blank(),
@@ -261,31 +272,32 @@ north_east_data <- subset(combined_region, region == "North East")
 (mosaic_plot_ds <- deep_south_data %>%
     arrange(Demographic) %>%    
     mutate(Demographic=factor(Demographic, levels=c("Under $25,000",
-    "$25,000 - $49,999", "$50,000 - $74,999", "$75,000 - $99,999",
-    "$100,000+"))) %>% 
+                                                    "$25,000 - $49,999",
+						    "$50,000 - $74,999",
+						    "$75,000 - $99,999",
+                                                    "$100,000+"))) %>% 
     ggplot() +
     geom_mosaic(aes(x=product( Demographic, State_Abbr ),
                     fill = voted_for, colour = Demographic,
-		    alpha = winner_amongst_group,), offset = 0.05) +
+                    alpha = winner_amongst_group,), offset = 0.05) +
     scale_alpha_manual(values =c(.5,1)) +
     theme(axis.text.x = element_text(angle = 90, hjust = 1,
-    vjust = .5)) + 
+                                     vjust = .5)) + 
     labs(y="Votes for:Income Demographic",
-    x = "AL        FL         MS         SC         TX",
-    title = "Deep South") +
+         x = "AL        FL         MS         SC         TX",
+         title = "Deep South") +
     scale_fill_manual(values = c("Trump" = "firebrick3",
-    "Biden" = "deepskyblue3")) +
+                                 "Biden" = "deepskyblue3")) +
     theme_bw() + theme(panel.border = element_blank(),
                        panel.grid.minor = element_blank(),
                        panel.grid.major = element_blank(),
                        plot.title = element_text(hjust = 0.5),
                        axis.line = element_blank(),
-                       #   axis.text.x = element_text(angle = 90,
-		       vjust = 0.5, hjust=1),
-                       axis.text.x=element_blank(),
-                       axis.ticks.x=element_blank(),
+                       axis.text.x=element_blank(), 
+                       axis.ticks.x=element_blank(), 
                        legend.position = "none")
-)
+  )
+
 
 # Arrange both plots together to give the appearance of a facet 
 grid.arrange(mosaic_plot_ds, mosaic_plot_ne, ncol=2, bottom = "States")
@@ -293,7 +305,10 @@ grid.arrange(mosaic_plot_ds, mosaic_plot_ne, ncol=2, bottom = "States")
 
 ![image](https://user-images.githubusercontent.com/91271151/144762600-ecdd201d-9008-4475-a16a-a1fb462d7dca.png)
 
-We now have a plot which clearly displays 5 catagorical variables. Ideally this would contain a figure caption, perhaps giving the full names of each state instead of just the abbreviations. We could do this when knitting into a PDF for example using fig.cap = "". 
+We now have a plot which clearly displays 5 catagorical variables. Ideally this would contain a figure caption, perhaps giving the full names of each state instead of just the abbreviations. We could do this when knitting into a PDF for example using: 
+```
+fig.cap = ""
+```
 
 <a name="plotlyinto"></a>
 # Plotly: An introduction to interactive visualisation

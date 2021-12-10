@@ -8,7 +8,6 @@ updated: 2021-12-09 21:00:00
 
 
 # Visualising Multi-dimensional Data
-## 
 
 High dimentional data refers to data frames which contain many variables and or levels. They are difficult to plot as only so much infomation can exist on a single figure whilst maintaining clarity. This tutorial is an introduction to several possible approaches to displaying multiple varibles whilst keeping plots clear and manageable. We will consider the use of interactive plots using the 'plotly' package to suppliment our figures throughout. The tutorial is broken down into the following sections:
 

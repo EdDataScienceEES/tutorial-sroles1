@@ -144,7 +144,8 @@ This plot is clear, informative and well labled. However, there is limitations t
 # Plot mosaic figure
 (mosaic_plot_alpha <- ggplot(data = combined) +
     geom_mosaic(aes(x=product( Demographic, State_Abbr ),
-                    fill = voted_for, colour = Demographic, alpha = Winner,), offset = 0.05) + # Alpha argument included 
+                    fill = voted_for, colour = Demographic, alpha = Winner,),
+		    offset = 0.05) + # Alpha argument included 
     scale_alpha_manual(values =c(.5,1)) +
     theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = .5)) + 
     labs(y="Income Demographic", x="Voted for: State",

@@ -1,4 +1,4 @@
-# Visualising Multi-dimensional Data
+# Visualising Multi-dimensional Data 📊
 Coding Club tutorial by Samuel Roles
 contact at s1869354@ed.ac.uk
 last updated: 09/12/2021

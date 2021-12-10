@@ -10,9 +10,11 @@ This is the repository for the visualising Multi-dimensional Data tutorial. Find
 - To be able to plot diferent types of multi-dimentional data using the approaches shown including 'workarounds' to problems associated with diferent plot types
 - To understand the uses, benefits and limitations of using interactive graphs
 - To practice data wrangling and exploration techniques useful when handling multi-dimentional data
-## Repo Folder Structure
+## Repo Folder Structure 🗂
 - data contains all data sets used for the tutorial
 - docs contains the tutorial script files 
 - scripts contains all the original scripts used to generate the code used in the tutorial
-## Requirements
-- Software: R Studio 
+## Further Reading and useful links 📖
+- https://www.researchgate.net/publication/226837533_High-dimensional_Data_Visualization
+- https://towardsdatascience.com/the-art-of-effective-visualization-of-multi-dimensional-data-6c7202990c57
+- https://plotly.com/r/

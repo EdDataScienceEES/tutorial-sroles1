@@ -1,6 +1,4 @@
 ---
-layout: tutorial 
-title: Visualising Multi-dimensional Data
 date: 2021-12-09 21:00:00
 author: Samuel Roles
 updated: 2021-12-09 21:00:00

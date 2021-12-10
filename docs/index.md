@@ -5,10 +5,9 @@ updated: 2021-12-09 21:00:00
 updater: Samuel Roles
 ---
 
-
 # Visualising Multi-dimensional Data
 
-High dimentional data refers to data frames which contain many variables and or levels. They are difficult to plot as only so much infomation can exist on a single figure whilst maintaining clarity. This tutorial is an introduction to several possible approaches to displaying multiple varibles whilst keeping plots clear and manageable. We will consider the use of interactive plots using the 'plotly' package to suppliment our figures throughout. The tutorial is broken down into the following sections:
+Multi-dimentional data refers to data frames which contain many variables and or levels. They are difficult to plot as only so much infomation can exist on a single figure whilst maintaining clarity. Most standard plots are two dimentional but we will explore approaches to displaying 3+ variables. This tutorial is an introduction to several possible approaches to displaying multiple varibles whilst keeping plots clear and manageable. We will consider the use of interactive plots using the 'plotly' package to suppliment our figures throughout. The tutorial is broken down into the following sections:
 
 
 #### <a href="#catagoricalvariables"> (1) Mosaic plots: Multiple catagorical variables </a>
@@ -21,13 +20,14 @@ High dimentional data refers to data frames which contain many variables and or 
 
 
 ## Learning Objectives:
-- To be able to name some of the dificulties of plotting multi-dimentional data
-- To be able to plot diferent types of multi-dimentional data using the approaches shown including 'workarounds' to problems associated with diferent plot types
-- To understand the uses, benefits and limitations of using interactive graphs
-- To practice data wrangling and exploration techniques useful when handling multi-dimentional data
+- To be able to name some of the __dificulties of plotting multi-dimentional data__
+- To be able to __plot diferent types of multi-dimentional data__ using the approaches shown including 'workarounds' to problems associated with diferent plot types
+- To understand the __uses, benefits and limitations of using interactive graphs__
+- To __practice data wrangling and exploration techniques__ useful when handling multi-dimentional data
 
 
-First, download the Github repository locally so that you can access the data sets and starter script required for this tutorial, through this link:https://github.com/EdDataScienceEES/tutorial-sroles1.git. Click on Clone/Download Zip, download the files and unzip them. The script for this tutorial is called X and the data frames 2020_ap_exit_polls_combined_2.xlsx, us_agri.csv and 2015_State_Top10Report_wTotalThefts.xlsx are in the data folder.
+
+First, __download the Github repository locally__ so that you can access the data sets and starter script required for this tutorial <a href="https://github.com/EdDataScienceEES/tutorial-sroles1.git" target="_blank">__here__</a>. Click on Clone/Download Zip, download the files and unzip them. The script for this tutorial is called X and the data frames 2020_ap_exit_polls_combined_2.xlsx, us_agri.csv and 2015_State_Top10Report_wTotalThefts.xlsx are in the data folder.
 
 
 <a name="catagoricalvariables"></a>
@@ -49,7 +49,7 @@ library(tidyverse)
 library(readxl)
 
 # load exit poll data
-exit_poll <- read_excel("data/2020_ap_exit_polls_combined_1.xlsx")
+exit_poll <- read_excel("data/2020_ap_exit_polls_combined_2.xlsx")
 
 # see all the columns and their unique levels 
 ulist <- lapply(exit_poll, unique) 
